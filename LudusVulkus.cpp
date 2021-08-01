@@ -1,35 +1,53 @@
-#define GLFW_INCLUDE_VULKAN
+#include "LudusVulkus.h"
+
 #include <GLFW/glfw3.h>
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
+#include "Logger.h"
+#include "Window.h"
+#include "Instance.h"
 
-#include <iostream>
+LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
+    app{ std::move(app) }
+{
+    // Initialise Window
+    window = std::make_unique<Window>("Ludus Vulkus", 800, 600, false);
 
-int main() {
-    glfwInit();
+    // Initialise Instance
+    instance = std::make_unique<Instance>(
+        this->app->name, this->app->version,    // App details
+        "Ludus Vulkus", Version{ 1, 0, 0 },     // Engine details
+        VK_API_VERSION_1_0,                     // Vulkan version
+        prepare_extensions(),                   // Extensions to load
+        select_validation_layers()              // Validation layers to load
+    );
+}
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
+void LudusVulkus::run() {
+    Logger::log("Starting application");
 
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    app->prepare();
+    
+    run_loop();
+}
 
-    std::cout << extensionCount << " extensions supported\n";
-
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
-
-    while (!glfwWindowShouldClose(window)) {
+void LudusVulkus::run_loop() {
+    while (!window->should_close()) {
         glfwPollEvents();
     }
+}
 
-    glfwDestroyWindow(window);
 
-    glfwTerminate();
+std::vector<std::string> LudusVulkus::prepare_extensions() {
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
 
-    return 0;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    return std::vector<std::string>(glfwExtensions, glfwExtensions + glfwExtensionCount);
+}
+
+std::vector<std::string> LudusVulkus::select_validation_layers() {
+    std::vector<std::string> layers = std::vector<std::string>();
+    layers.push_back("VK_LAYER_KHRONOS_validation");
+    return layers;
 }
