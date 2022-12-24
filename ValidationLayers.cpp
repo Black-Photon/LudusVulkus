@@ -1,6 +1,6 @@
 #include "ValidationLayers.h"
 
-ValidationLayers::ValidationLayers() {
+ValidationLayers::ValidationLayers() { 
     uint32_t layer_count;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
     std::vector<VkLayerProperties> available_layers(layer_count);
@@ -13,7 +13,7 @@ std::vector<VkLayerProperties> ValidationLayers::get_available_layers() {
 }
 
 bool ValidationLayers::is_layer_available(std::string layer) {
-    for (auto available_layer : layers) {
+    for (auto &available_layer : layers) {
         if (layer == available_layer.layerName) return true;
     }
     return false;

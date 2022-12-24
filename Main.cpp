@@ -19,7 +19,7 @@ int main() {
         LudusVulkus ludus_vulkus(std::move(app));
         ludus_vulkus.run();
     } catch (const std::exception& e) {
-        Logger::log(e.what(), Logger::ERROR);
+        Logger::log(e.what(), Logger::FATAL);
         return EXIT_FAILURE;
     }
 

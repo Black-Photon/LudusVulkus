@@ -3,13 +3,15 @@
 #include <stdexcept>
 #include <GLFW/glfw3.h>
 #include <cassert>
+#include <optional>
 
 #include "Logger.h"
 
 Instance::Instance(
     std::string app_name, Version app_version,
     std::string engine_name, Version engine_version,
-    int vulkan_version, std::vector<std::string> required_extensions,
+    int vulkan_version, std::shared_ptr<Settings> settings,
+    std::vector<std::string> required_extensions,
     std::vector<std::string> required_layers
 ) {
 	VkApplicationInfo app_info{};
@@ -38,7 +40,7 @@ Instance::Instance(
     // Make sure all required extensions are available
     for (auto required_extension : required_extensions) {
         bool found = false;
-        for (auto available_extension : available_extensions) {
+        for (auto &available_extension : available_extensions) {
             if (required_extension == available_extension.extensionName) {
                 found = true;
                 break;
@@ -48,44 +50,56 @@ Instance::Instance(
     }
 
     // Copy extension list into new structure
-    char** c_extensions = new char* [required_extensions.size()];
+    const char** c_extensions = new const char* [required_extensions.size()];
     for (int index = 0; index < required_extensions.size(); index++) {
-        c_extensions[index] = const_cast<char*>(required_extensions[index].c_str());
+        c_extensions[index] = required_extensions[index].c_str();
         Logger::log("Loading extension " + required_extensions[index]);
     }
 
 
     // --- VALIDATION LAYERS --- //
-
-    ValidationLayers layers_ref;
-    for (auto layer : required_layers) {
-        if (!layers_ref.is_layer_available(layer)) {
-            throw std::runtime_error("Required layer " + layer + " is not available.");
+    if (settings->use_validation_layers) {
+        ValidationLayers layers_ref;
+        for (auto layer : required_layers) {
+            if (!layers_ref.is_layer_available(layer)) {
+                throw std::runtime_error("Required layer " + layer + " is not available.");
+            }
         }
-    }
 
-    // Copy validation layer list into new structure
-    char** c_layers = new char* [required_layers.size()];
-    for (int index = 0; index < required_layers.size(); index++) {
-        c_layers[index] = const_cast<char*>(required_layers[index].c_str());
-        Logger::log("Loading validation layer " + required_layers[index]);
+        // Copy validation layer list into new structure
+        const char** c_layers = new const char* [required_layers.size()];
+        for (int index = 0; index < required_layers.size(); index++) {
+            c_layers[index] = required_layers[index].c_str();
+            Logger::log("Loading validation layer " + required_layers[index]);
+        }
+
+        debug_messenger = DebugMessenger(settings);
+
+        create_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debug_messenger.value().create_info;
+        create_info.enabledLayerCount = required_layers.size();
+        create_info.ppEnabledLayerNames = c_layers;
+    } else {
+        create_info.pNext = nullptr;
+        create_info.enabledLayerCount = 0;
     }
 
     create_info.enabledExtensionCount = required_extensions.size();
     create_info.ppEnabledExtensionNames = c_extensions;
-    create_info.enabledLayerCount = required_layers.size();
-    create_info.ppEnabledLayerNames = c_layers;
 
-    VkInstance i;
-    VkResult result = vkCreateInstance(&create_info, nullptr, &i);
+    VkResult result = vkCreateInstance(&create_info, nullptr, &instance);
     if (result != VK_SUCCESS) throw std::runtime_error("Failed to create instance.");
 
-    instance = std::make_unique<VkInstance>(i);
+    if (debug_messenger.has_value()) debug_messenger.value().create_messenger(instance);
 
     // Delete extension list
     delete[] c_extensions;
 }
 
 Instance::~Instance() {
-    vkDestroyInstance(*instance, nullptr);
+    if (debug_messenger.has_value()) debug_messenger.reset();
+    vkDestroyInstance(instance, nullptr);
+}
+
+VkInstance Instance::get_vk_instance() {
+    return instance;
 }

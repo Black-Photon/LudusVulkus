@@ -9,17 +9,37 @@
 LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     app{ std::move(app) }
 {
+    // Setup any constants
+    settings = std::make_shared<Settings>();
+    setup_settings();
+
     // Initialise Window
     window = std::make_unique<Window>("Ludus Vulkus", 800, 600, false);
 
     // Initialise Instance
-    instance = std::make_unique<Instance>(
+    instance = std::make_shared<Instance>(
         this->app->name, this->app->version,    // App details
         "Ludus Vulkus", Version{ 1, 0, 0 },     // Engine details
         VK_API_VERSION_1_0,                     // Vulkan version
+        settings,                               // Reference to settings
         prepare_extensions(),                   // Extensions to load
         select_validation_layers()              // Validation layers to load
     );
+}
+
+void LudusVulkus::setup_settings() {
+#ifdef NDEBUG
+    bool debug = false;
+#else
+    bool debug = true;
+#endif
+    settings->use_validation_layers = debug;
+    settings->close_on_non_fatal = false;
+
+    settings->layer_verbose_enable = false;
+    settings->layer_info_enable = false;
+    settings->layer_warn_enable = true;
+    settings->layer_error_enable = true;
 }
 
 void LudusVulkus::run() {
@@ -41,9 +61,15 @@ std::vector<std::string> LudusVulkus::prepare_extensions() {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
+    // Find extensions needed by glfw
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    return std::vector<std::string>(glfwExtensions, glfwExtensions + glfwExtensionCount);
+    std::vector<std::string> extensions = std::vector<std::string>(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+    // Add extensions for validation layer if needed
+    if (settings->use_validation_layers) extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+    return extensions;
 }
 
 std::vector<std::string> LudusVulkus::select_validation_layers() {
