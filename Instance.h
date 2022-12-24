@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <optional>
+#include <algorithm>
 
 #include "ValidationLayers.h"
 #include "DebugMessenger.h"

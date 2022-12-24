@@ -7,6 +7,7 @@
 #include "Instance.h"
 
 #include "PhysicalDevice.h"
+#include "Device.h"
 
 LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     app{ std::move(app) }
@@ -18,6 +19,8 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     // Initialise Window
     window = std::make_shared<Window>("Ludus Vulkus", 800, 600, false);
 
+    std::vector<std::string> validation_layers = select_validation_layers();
+
     // Initialise Instance
     instance = std::make_shared<Instance>(
         this->app->name, this->app->version,    // App details
@@ -25,10 +28,15 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
         VK_API_VERSION_1_0,                     // Vulkan version
         settings,                               // Reference to settings
         prepare_extensions(),                   // Extensions to load
-        select_validation_layers()              // Validation layers to load
+        validation_layers                       // Validation layers to load
     );
 
     std::vector<PhysicalDevice> physical_devices = PhysicalDevice::get_device_list(instance->instance);
+    std::vector<std::unique_ptr<Device>> devices;
+    for (auto& physical_device : physical_devices) {
+        std::unique_ptr<Device> device = std::make_unique<Device>(physical_device, physical_device.selected_family.at(GRAPHICS), *settings, validation_layers);
+        devices.push_back(std::move(device));
+    }
 }
 
 void LudusVulkus::setup_settings() {
