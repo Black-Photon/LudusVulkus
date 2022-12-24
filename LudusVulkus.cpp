@@ -6,6 +6,8 @@
 #include "Window.h"
 #include "Instance.h"
 
+#include "PhysicalDevice.h"
+
 LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     app{ std::move(app) }
 {
@@ -14,7 +16,7 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     setup_settings();
 
     // Initialise Window
-    window = std::make_unique<Window>("Ludus Vulkus", 800, 600, false);
+    window = std::make_shared<Window>("Ludus Vulkus", 800, 600, false);
 
     // Initialise Instance
     instance = std::make_shared<Instance>(
@@ -25,6 +27,8 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
         prepare_extensions(),                   // Extensions to load
         select_validation_layers()              // Validation layers to load
     );
+
+    std::vector<PhysicalDevice> physical_devices = PhysicalDevice::get_device_list(instance->instance);
 }
 
 void LudusVulkus::setup_settings() {
