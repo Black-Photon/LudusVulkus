@@ -5,18 +5,20 @@
 #include <map>
 
 #include "QueueFamily.h"
+#include "Surface.h"
 
 enum QueueType {
 	GRAPHICS,
 	COMPUTE,
-	TRANSFER
+	TRANSFER,
+	PRESENT
 };
 
 class PhysicalDevice {
 public:
-	static std::vector<PhysicalDevice> get_device_list(VkInstance instance);
+	static std::vector<PhysicalDevice> get_device_list(VkInstance instance, Surface& surface);
 
-	PhysicalDevice(VkPhysicalDevice device);
+	PhysicalDevice(VkPhysicalDevice device, Surface& surface);
 
 	VkPhysicalDevice& get();
 		

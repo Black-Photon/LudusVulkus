@@ -15,3 +15,7 @@ Window::~Window() {
 bool Window::should_close() {
 	return glfwWindowShouldClose(window);
 }
+
+GLFWwindow* Window::get() {
+	return window;
+}

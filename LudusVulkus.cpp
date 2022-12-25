@@ -5,9 +5,9 @@
 #include "Logger.h"
 #include "Window.h"
 #include "Instance.h"
-
 #include "PhysicalDevice.h"
 #include "Device.h"
+#include "Surface.h"
 
 LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     app{ std::move(app) }
@@ -31,7 +31,9 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
         validation_layers                       // Validation layers to load
     );
 
-    std::vector<PhysicalDevice> physical_devices = PhysicalDevice::get_device_list(instance->instance);
+    Surface surface(*instance, *window);
+
+    std::vector<PhysicalDevice> physical_devices = PhysicalDevice::get_device_list(instance->get(), surface);
     std::vector<std::unique_ptr<Device>> devices;
     for (auto& physical_device : physical_devices) {
         std::unique_ptr<Device> device = std::make_unique<Device>(physical_device, physical_device.selected_family.at(GRAPHICS), *settings, validation_layers);

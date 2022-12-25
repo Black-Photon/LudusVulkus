@@ -96,6 +96,6 @@ Instance::~Instance() {
     vkDestroyInstance(instance, nullptr);
 }
 
-VkInstance Instance::get_vk_instance() {
+VkInstance Instance::get() {
     return instance;
 }

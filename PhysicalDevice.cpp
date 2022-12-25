@@ -5,7 +5,7 @@
 
 #include "Logger.h"
 
-std::vector<PhysicalDevice> PhysicalDevice::get_device_list(VkInstance instance) {
+std::vector<PhysicalDevice> PhysicalDevice::get_device_list(VkInstance instance, Surface& surface) {
 	uint32_t device_count = 0;
 	vkEnumeratePhysicalDevices(instance, &device_count, nullptr);
 	std::vector<VkPhysicalDevice> supported_devices(device_count);
@@ -17,7 +17,7 @@ std::vector<PhysicalDevice> PhysicalDevice::get_device_list(VkInstance instance)
 
 	std::multimap<int, PhysicalDevice> device_options;
 	for (const auto& vk_device : supported_devices) {
-		PhysicalDevice device(vk_device);
+		PhysicalDevice device(vk_device, surface);
 		int suitability = device.find_suitability();
 		device_options.insert(std::make_pair(suitability, device));
 	}
@@ -28,7 +28,16 @@ std::vector<PhysicalDevice> PhysicalDevice::get_device_list(VkInstance instance)
 	for (const auto& device : device_options) {
 		if (device.first > 0) {
 			devices.push_back(device.second);
-			Logger::log("\tDevice with name \"" + std::string(device.second.device_properties.deviceName) + "\" registered", Logger::INFO);
+
+			Logger::log("\tDevice with name \"" + std::string(device.second.device_properties.deviceName) + "\" registered");
+			std::map<QueueType, QueueFamily> selected_family = device.second.selected_family;
+			auto has_support = [selected_family](QueueType queue_type) {
+				return std::string(selected_family.find(queue_type) != selected_family.end() ? "true" : "false");
+			};
+			Logger::log("\t - Graphics: " + has_support(GRAPHICS), Logger::VERBOSE);
+			Logger::log("\t - Compute:  " + has_support(COMPUTE), Logger::VERBOSE);
+			Logger::log("\t - Transfer: " + has_support(TRANSFER), Logger::VERBOSE);
+			Logger::log("\t - Present:  " + has_support(PRESENT), Logger::VERBOSE);
 		}
 	}
 
@@ -61,19 +70,21 @@ int PhysicalDevice::find_suitability() {
 	bool graphics_family_exists = false;
 	bool compute_family_exists = false;
 	bool transfer_family_exists = false;
+	bool present_family_exists = false;
 	for (auto &queue_family : queue_families) {
 		if (queue_family.supports_graphics) graphics_family_exists = true;
 		if (queue_family.supports_compute) compute_family_exists = true;
 		if (queue_family.supports_transfer) transfer_family_exists = true;
+		if (queue_family.supports_present) present_family_exists = true;
 	}
-	if (!graphics_family_exists) suitability = NOT_SUITABLE;
+	if (!graphics_family_exists || !present_family_exists) suitability = NOT_SUITABLE;
 	if (compute_family_exists) suitability += 2 << 0;
 	if (transfer_family_exists) suitability += 1 << 0;
 
 	return suitability;
 }
 
-PhysicalDevice::PhysicalDevice(VkPhysicalDevice device) : device(device) {
+PhysicalDevice::PhysicalDevice(VkPhysicalDevice device, Surface &surface) : device(device) {
 	vkGetPhysicalDeviceProperties(device, &device_properties);
 	vkGetPhysicalDeviceFeatures(device, &device_features);
 
@@ -85,12 +96,13 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice device) : device(device) {
 
 	uint32_t index = 0;
 	for (auto &vk_queue_family : vk_queue_families) {
-		queue_families.push_back(QueueFamily(vk_queue_family, index++));
+		queue_families.push_back(QueueFamily(vk_queue_family, index++, *this, surface));
 		QueueFamily& queue_family = queue_families.back();
 
 		if (queue_family.supports_graphics && !selected_family.contains(GRAPHICS)) selected_family.insert(std::pair(GRAPHICS, queue_family));
 		if (queue_family.supports_compute && !selected_family.contains(COMPUTE)) selected_family.insert(std::pair(COMPUTE, queue_family));
 		if (queue_family.supports_transfer && !selected_family.contains(TRANSFER)) selected_family.insert(std::pair(TRANSFER, queue_family));
+		if (queue_family.supports_present && !selected_family.contains(PRESENT)) selected_family.insert(std::pair(PRESENT, queue_family));
 	}
 }
 

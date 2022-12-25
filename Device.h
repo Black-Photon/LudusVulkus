@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <stdexcept>
+#include <set>
 
 #include "Queue.h"
 #include "PhysicalDevice.h"
@@ -22,7 +23,7 @@ public:
 	VkDevice& get();
 
 private:
-	Queue queue;
+	std::map<QueueType, std::shared_ptr<Queue>> queues;
 	VkDevice device;
 };
 

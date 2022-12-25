@@ -21,8 +21,6 @@ struct Version {
 
 class Instance {
 public:
-	VkInstance instance;
-
 	Instance(
 		std::string app_name, Version app_version,
 		std::string engine_name, Version engine_version,
@@ -32,9 +30,10 @@ public:
 	);
 	~Instance();
 
-	VkInstance get_vk_instance();
+	VkInstance get();
 
 private:
+	VkInstance instance;
 	std::optional<DebugMessenger> debug_messenger;
 };
 
