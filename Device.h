@@ -13,14 +13,17 @@
 
 class Device {
 public:
-	Device(PhysicalDevice& physical_device,
+	Device(std::shared_ptr<PhysicalDevice> physical_device,
 		QueueFamily& queue_family,
 		Settings& settings,
-		std::vector<std::string> required_layers);
+		std::set<std::string> required_extensions,
+		std::set<std::string> required_layers);
 	Device(const Device&) = delete;
 	~Device();
 
 	VkDevice& get();
+
+	std::shared_ptr<PhysicalDevice> physical_device;
 
 private:
 	std::map<QueueType, std::shared_ptr<Queue>> queues;

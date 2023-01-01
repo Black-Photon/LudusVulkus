@@ -168,6 +168,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="SwapChain.h" />
+    <ClInclude Include="SwapChainDetails.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestApplication.h" />
     <ClInclude Include="ValidationLayers.h" />
@@ -185,6 +187,8 @@
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="QueueFamily.cpp" />
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="SwapChain.cpp" />
+    <ClCompile Include="SwapChainDetails.cpp" />
     <ClCompile Include="TestApplication.cpp" />
     <ClCompile Include="ValidationLayers.cpp" />
     <ClCompile Include="VulkanEXT.cpp" />

@@ -6,6 +6,7 @@
 #include <vector>
 #include <optional>
 #include <algorithm>
+#include <set>
 
 #include "ValidationLayers.h"
 #include "DebugMessenger.h"
@@ -25,8 +26,8 @@ public:
 		std::string app_name, Version app_version,
 		std::string engine_name, Version engine_version,
 		int vulkan_version, std::shared_ptr<Settings> settings,
-		std::vector<std::string> required_extensions,
-		std::vector<std::string> required_layers
+		std::set<std::string> required_extensions,
+		std::set<std::string> required_layers
 	);
 	~Instance();
 

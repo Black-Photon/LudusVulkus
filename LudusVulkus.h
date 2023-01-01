@@ -24,6 +24,8 @@ private:
     std::vector<PhysicalDevice> physical_devices;
 
     void setup_settings();
-    std::vector<std::string> prepare_extensions();
-    std::vector<std::string> select_validation_layers();
+    bool is_mobile();
+    std::set<std::string> prepare_extensions();
+    std::set<std::string> prepare_device_extensions();
+    std::set<std::string> select_validation_layers();
 };

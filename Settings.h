@@ -9,4 +9,6 @@ public:
     bool layer_info_enable;
     bool layer_warn_enable;
     bool layer_error_enable;
+
+    bool is_mobile;
 };
