@@ -112,6 +112,11 @@ SwapChain::SwapChain(std::shared_ptr<Device> device, Window& window, Surface& su
     vkGetSwapchainImagesKHR(device->get(), swap_chain, &image_count, nullptr);
     images.resize(image_count);
     vkGetSwapchainImagesKHR(device->get(), swap_chain, &image_count, images.data());
+
+    for (auto &image : images) {
+        std::unique_ptr<ImageView> image_view = std::make_unique<ImageView>(device, image, image_format);
+        image_views.push_back(std::move(image_view));
+    }
 }
 
 SwapChain::~SwapChain() {

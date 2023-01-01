@@ -4,6 +4,7 @@
 
 #include "SwapChainDetails.h"
 #include "Device.h"
+#include "ImageView.h"
 
 class SwapChain {
 public:
@@ -17,6 +18,7 @@ public:
 	VkSwapchainKHR get();
 
 	std::vector<VkImage> images;
+	std::vector<std::unique_ptr<ImageView>> image_views;
 
 private:
 	std::shared_ptr<Device> device;
