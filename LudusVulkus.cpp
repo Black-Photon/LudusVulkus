@@ -9,6 +9,7 @@
 #include "Device.h"
 #include "Surface.h"
 #include "SwapChain.h"
+#include "Pipeline.h"
 
 LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
     app{ std::move(app) }
@@ -44,6 +45,10 @@ LudusVulkus::LudusVulkus(std::unique_ptr<Application> app) :
 
     // Just use the first Device for now
     SwapChain swap_chain(devices.at(0), *window, surface, *settings);
+
+    Shader vertex_shader("Vertex.spv", devices.at(0));
+    Shader fragment_shader("Fragment.spv", devices.at(0));
+    Pipeline pipeline(vertex_shader, fragment_shader, devices.at(0), swap_chain);
 }
 
 void LudusVulkus::setup_settings() {

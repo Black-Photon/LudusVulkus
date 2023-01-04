@@ -133,6 +133,12 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.236.0\Lib;C:\Users\josep\source\repos\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>.\CompileShader.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -153,21 +159,32 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.236.0\Lib;C:\Users\josep\source\repos\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>.\CompileShader.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="DebugMessenger.h" />
+    <ClInclude Include="DynamicState.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="ImageView.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="LudusVulkus.h" />
     <ClInclude Include="PhysicalDevice.h" />
+    <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="QueueFamily.h" />
+    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="SwapChainDetails.h" />
@@ -180,14 +197,19 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DebugMessenger.cpp" />
+    <ClCompile Include="DynamicState.cpp" />
+    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="ImageView.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="LudusVulkus.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PhysicalDevice.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="QueueFamily.cpp" />
+    <ClCompile Include="RenderPass.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="SwapChainDetails.cpp" />
@@ -202,6 +224,13 @@
   <ItemGroup>
     <Image Include="LudusVulkus.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CompileShader.bat" />
+    <None Include="Fragment.spv" />
+    <None Include="Shader.frag" />
+    <None Include="Shader.vert" />
+    <None Include="Vertex.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

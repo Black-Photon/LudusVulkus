@@ -17,13 +17,13 @@ public:
 
 	VkSwapchainKHR get();
 
+	VkFormat image_format;
 	std::vector<VkImage> images;
 	std::vector<std::unique_ptr<ImageView>> image_views;
 
 private:
 	std::shared_ptr<Device> device;
 	VkSwapchainKHR swap_chain;
-	VkFormat image_format;
 	VkExtent2D extent;
 };
 
