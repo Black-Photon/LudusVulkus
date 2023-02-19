@@ -7,7 +7,7 @@
 
 class Surface {
 public:
-	Surface(Instance& instance, Window& window);
+	Surface(const Instance& instance, const Window& window);
 	~Surface();
 
 	VkSurfaceKHR get();

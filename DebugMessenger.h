@@ -9,7 +9,7 @@
 class DebugMessenger
 {
 public:
-	DebugMessenger(std::shared_ptr<Settings> settings);
+	DebugMessenger(Settings &settings);
 	~DebugMessenger();
 
 	void create_messenger(VkInstance instance);
@@ -24,7 +24,7 @@ public:
 
 private:
 	std::optional<VkInstance> instance;
-	std::shared_ptr<Settings> settings;
+	Settings settings;
 	VkDebugUtilsMessengerEXT debug_messenger;
 };
 

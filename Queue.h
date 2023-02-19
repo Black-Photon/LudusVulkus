@@ -4,6 +4,13 @@
 #include <optional>
 
 #include "QueueFamily.h"
+#include "CommandBuffer.h"
+#include "Semaphore.h"
+#include "Type.h"
+#include "SwapChain.h"
+#include "Fence.h"
+
+#include <optional>
 
 class Device;
 
@@ -14,13 +21,18 @@ public:
 	Queue(QueueFamily& queue_family);
 
 	void setup_queue(Device &device);
+	void submit(CommandBuffer &command_buffer, std::vector<std::pair<Semaphore *, PipelineStage>> &wait_semaphores, std::vector<Semaphore *> &signal_semaphores, std::optional<Fence *> fence = VK_NULL_HANDLE);
+	void present(SwapChain& swap_chain, uint32_t index, std::vector<Semaphore *>& wait_semaphores);
 
 	VkQueue& get();
+
+	QueueFamily queue_family;
 
 private:
 	const float priority = 1.0f;
 	
-	QueueFamily queue_family;
 	std::optional<VkQueue> queue;
+
+	void assert_setup();
 };
 

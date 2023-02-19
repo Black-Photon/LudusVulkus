@@ -6,32 +6,32 @@
 #include "Logger.h"
 #include "SwapChainDetails.h"
 
-std::vector<std::shared_ptr<PhysicalDevice>> PhysicalDevice::get_device_list(VkInstance instance, Surface& surface, std::set<std::string> required_extensions) {
+std::vector<PhysicalDevice> PhysicalDevice::get_device_list(Instance& instance, Surface& surface, std::set<std::string> required_extensions) {
 	uint32_t device_count = 0;
-	vkEnumeratePhysicalDevices(instance, &device_count, nullptr);
+	vkEnumeratePhysicalDevices(instance.get(), &device_count, nullptr);
 	std::vector<VkPhysicalDevice> supported_devices(device_count);
-	vkEnumeratePhysicalDevices(instance, &device_count, supported_devices.data());
+	vkEnumeratePhysicalDevices(instance.get(), &device_count, supported_devices.data());
 
 	if (device_count == 0) {
 		throw std::runtime_error("Failed to find GPU with Vulkan support");
 	}
 
-	std::multimap<int, std::shared_ptr<PhysicalDevice>> device_options;
+	std::multimap<int, PhysicalDevice> device_options;
 	for (const auto& vk_device : supported_devices) {
-		std::shared_ptr<PhysicalDevice> device = std::make_shared<PhysicalDevice>(vk_device, surface);
-		int suitability = device->find_suitability(required_extensions, surface);
+		PhysicalDevice device(vk_device, surface);
+		int suitability = device.find_suitability(required_extensions, surface);
 		device_options.insert(std::make_pair(suitability, device));
 	}
 
 	Logger::log("Starting device registration (priority TOP->BOTTOM)", Logger::INFO);
 
-	std::vector<std::shared_ptr<PhysicalDevice>> devices;
+	std::vector<PhysicalDevice> devices;
 	for (const auto& device : device_options) {
 		if (device.first > 0) {
 			devices.push_back(device.second);
 
-			Logger::log("\tDevice with name \"" + std::string(device.second->device_properties.deviceName) + "\" registered");
-			std::map<QueueType, QueueFamily> selected_family = device.second->selected_family;
+			Logger::log("\tDevice with name \"" + std::string(device.second.device_properties.deviceName) + "\" registered");
+			std::map<QueueType, QueueFamily> selected_family = device.second.selected_family;
 			auto has_support = [selected_family](QueueType queue_type) {
 				return std::string(selected_family.find(queue_type) != selected_family.end() ? "true" : "false");
 			};
@@ -71,7 +71,7 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice device, Surface &surface) : devi
 	}
 }
 
-VkPhysicalDevice &PhysicalDevice::get() {
+VkPhysicalDevice PhysicalDevice::get() const {
 	return device;
 }
 

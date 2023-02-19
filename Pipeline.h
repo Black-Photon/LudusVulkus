@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "DynamicState.h"
 #include "SwapChain.h"
+#include "RenderPass.h"
 
 enum ShaderType {
 	VERTEX, FRAGMENT
@@ -10,10 +11,11 @@ enum ShaderType {
 
 class Pipeline {
 public:
-	Pipeline(Shader &vertex_shader, Shader &fragment_shader, std::shared_ptr<Device> device, SwapChain& swap_chain);
+	Pipeline(Shader &vertex_shader, Shader &fragment_shader, Device &device, RenderPass& render_pass);
 	~Pipeline();
 
-	VkPipelineLayout get();
+	VkPipeline get();
+	VkPipelineLayout get_layout();
 	VkPipelineShaderStageCreateInfo create_shader_stage(Shader& shader, ShaderType type);
 	VkPipelineDynamicStateCreateInfo create_dynamic_state(DynamicState& dynamic_state);
 	VkPipelineVertexInputStateCreateInfo create_vertex_input_state();
@@ -25,7 +27,7 @@ public:
 	VkPipelineColorBlendStateCreateInfo create_color_blend_state(std::vector<VkPipelineColorBlendAttachmentState> &blend_attachment_infos);
 
 private:
-	std::shared_ptr<Device> device;
+	Device &device;
 	VkPipelineLayout pipeline_layout;
 	VkPipeline pipeline;
 };

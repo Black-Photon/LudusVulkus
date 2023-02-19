@@ -1,12 +1,14 @@
 #include "Device.h"
 
+#include "Queue.h"
+#include "Settings.h"
 #include "Logger.h"
 
-Device::Device(std::shared_ptr<PhysicalDevice> physical_device,
-			   QueueFamily& queue_family,
-			   Settings &settings,
-			   std::set<std::string> required_extensions,
-			   std::set<std::string> required_layers) :
+Device::Device(const PhysicalDevice &physical_device,
+	const QueueFamily &queue_family,
+	const Settings &settings,
+	const std::set<std::string> &required_extensions,
+	const std::set<std::string> &required_layers) :
 	physical_device(physical_device)
 {
 
@@ -14,7 +16,7 @@ Device::Device(std::shared_ptr<PhysicalDevice> physical_device,
 	std::map<QueueFamily, std::shared_ptr<Queue>> created_queues;
 	std::vector<VkDeviceQueueCreateInfo> created_queue_info;
 
-	for (auto pair : physical_device->selected_family) {
+	for (auto pair : physical_device.selected_family) {
 		std::shared_ptr<Queue> queue;
 		if (created_queues.contains(pair.second)) {
 			queue = created_queues.at(pair.second);
@@ -39,7 +41,7 @@ Device::Device(std::shared_ptr<PhysicalDevice> physical_device,
 	create_info.queueCreateInfoCount = static_cast<uint32_t>(created_queue_info.size());
 	create_info.pQueueCreateInfos = created_queue_info.data();
 
-	create_info.pEnabledFeatures = &physical_device->device_features;
+	create_info.pEnabledFeatures = &physical_device.device_features;
 	create_info.enabledExtensionCount = static_cast<uint32_t>(c_extensions.size());
 	create_info.ppEnabledExtensionNames = c_extensions.data();
 
@@ -55,7 +57,7 @@ Device::Device(std::shared_ptr<PhysicalDevice> physical_device,
 		create_info.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(physical_device->get(), &create_info, nullptr, &device) != VK_SUCCESS) {
+	if (vkCreateDevice(physical_device.get(), &create_info, nullptr, &device) != VK_SUCCESS) {
 		throw std::runtime_error("Could not create device for chosen queue family and physical device");
 	}
 
@@ -66,6 +68,7 @@ Device::Device(std::shared_ptr<PhysicalDevice> physical_device,
 }
 
 Device::~Device() {
+	Logger::log("Freeing Device", Logger::VERBOSE);
 	vkDestroyDevice(device, nullptr);
 }
 

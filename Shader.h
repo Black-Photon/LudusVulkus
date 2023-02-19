@@ -6,13 +6,13 @@
 
 class Shader {
 public:
-	Shader(std::string filename, std::shared_ptr<Device> device);
+	Shader(Device &device, std::string filename);
 	~Shader();
 
 	VkShaderModule get();
 
 private:
-	std::shared_ptr<Device> device;
+	Device &device;
 	VkShaderModule shader_module;
 };
 

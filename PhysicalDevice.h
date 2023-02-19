@@ -17,11 +17,11 @@ enum QueueType {
 
 class PhysicalDevice {
 public:
-	static std::vector<std::shared_ptr<PhysicalDevice>> get_device_list(VkInstance instance, Surface& surface, std::set<std::string> required_extensions);
+	static std::vector<PhysicalDevice> get_device_list(Instance& instance, Surface& surface, std::set<std::string> required_extensions);
 
 	PhysicalDevice(VkPhysicalDevice device, Surface& surface);
 
-	VkPhysicalDevice& get();
+	VkPhysicalDevice get() const;
 		
 	std::vector<QueueFamily> queue_families;
 	std::map<QueueType, QueueFamily> selected_family;

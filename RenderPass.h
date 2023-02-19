@@ -3,16 +3,17 @@
 #include <vulkan/vulkan.h>
 
 #include "SwapChain.h"
+#include "SubpassDependency.h"
 
 class RenderPass {
 public:
-	RenderPass(std::shared_ptr<Device> device, SwapChain& swap_chain);
+	RenderPass(Device &device, SwapChain& swap_chain, std::vector<SubpassDependency> dependancies = {});
 	~RenderPass();
 
 	VkRenderPass get();
 
 private:
-	std::shared_ptr<Device> device;
+	Device &device;
 	VkRenderPass render_pass;
 };
 

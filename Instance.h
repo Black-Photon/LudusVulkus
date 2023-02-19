@@ -23,15 +23,15 @@ struct Version {
 class Instance {
 public:
 	Instance(
-		std::string app_name, Version app_version,
-		std::string engine_name, Version engine_version,
-		int vulkan_version, std::shared_ptr<Settings> settings,
-		std::set<std::string> required_extensions,
-		std::set<std::string> required_layers
+		const std::string &app_name, const Version &app_version,
+		const std::string &engine_name, const Version &engine_version,
+		int vulkan_version, Settings &settings,
+		const std::set<std::string> &required_extensions,
+		const std::set<std::string> &required_layers
 	);
 	~Instance();
 
-	VkInstance get();
+	VkInstance get() const;
 
 private:
 	VkInstance instance;

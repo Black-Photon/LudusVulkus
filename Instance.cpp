@@ -8,11 +8,11 @@
 #include "Logger.h"
 
 Instance::Instance(
-    std::string app_name, Version app_version,
-    std::string engine_name, Version engine_version,
-    int vulkan_version, std::shared_ptr<Settings> settings,
-    std::set<std::string> required_extensions,
-    std::set<std::string> required_layers
+    const std::string &app_name, const Version &app_version,
+    const std::string &engine_name, const Version &engine_version,
+    int vulkan_version, Settings &settings,
+    const std::set<std::string> &required_extensions,
+    const std::set<std::string> &required_layers
 ) {
 	VkApplicationInfo app_info{};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -58,7 +58,7 @@ Instance::Instance(
 
     // --- VALIDATION LAYERS --- //
     std::vector<const char*> c_layers;
-    if (settings->use_validation_layers) {
+    if (settings.use_validation_layers) {
         ValidationLayers layers_ref;
         for (auto layer : required_layers) {
             if (!layers_ref.is_layer_available(layer)) {
@@ -92,10 +92,11 @@ Instance::Instance(
 }
 
 Instance::~Instance() {
+    Logger::log("Freeing Instance", Logger::VERBOSE);
     if (debug_messenger.has_value()) debug_messenger.reset();
     vkDestroyInstance(instance, nullptr);
 }
 
-VkInstance Instance::get() {
+VkInstance Instance::get() const {
     return instance;
 }

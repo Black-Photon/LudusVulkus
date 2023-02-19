@@ -8,7 +8,7 @@ public:
 	Window(std::string name, int width = 800, int height = 600, bool resizable = true);
 	~Window();
 	bool should_close();
-	GLFWwindow* get();
+	GLFWwindow* get() const;
 
 private:
 	GLFWwindow* window;

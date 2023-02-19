@@ -1,8 +1,8 @@
 #include "Pipeline.h"
 
-#include "RenderPass.h"
+#include "Logger.h"
 
-Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, std::shared_ptr<Device> device, SwapChain &swap_chain) :
+Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, Device &device, RenderPass &render_pass) :
 	device(device)
 {
 	VkPipelineShaderStageCreateInfo vertex_stage_info = create_shader_stage(vertex_shader, VERTEX);
@@ -31,11 +31,9 @@ Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, std::shared_p
 	pipeline_layout_info.pushConstantRangeCount = 0;
 	pipeline_layout_info.pPushConstantRanges = nullptr;
 
-	if (vkCreatePipelineLayout(device->get(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(device.get(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
 		throw std::runtime_error("Could not create pipeline layout");
 	}
-
-	RenderPass render_pass(device, swap_chain);
 
 	VkGraphicsPipelineCreateInfo pipeline_info{};
 	pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -55,17 +53,22 @@ Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, std::shared_p
 	pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
 	pipeline_info.basePipelineIndex = -1;
 
-	if (vkCreateGraphicsPipelines(device->get(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &pipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(device.get(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &pipeline) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create pipeline");
 	}
 }
 
 Pipeline::~Pipeline() {
-	vkDestroyPipelineLayout(device->get(), pipeline_layout, nullptr);
-	vkDestroyPipeline(device->get(), pipeline, nullptr);
+	Logger::log("Freeing Pipeline", Logger::VERBOSE);
+	vkDestroyPipelineLayout(device.get(), pipeline_layout, nullptr);
+	vkDestroyPipeline(device.get(), pipeline, nullptr);
 }
 
-VkPipelineLayout Pipeline::get() {
+VkPipeline Pipeline::get() {
+	return pipeline;
+}
+
+VkPipelineLayout Pipeline::get_layout() {
 	return pipeline_layout;
 }
 

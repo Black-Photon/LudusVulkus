@@ -56,10 +56,10 @@ VkExtent2D SwapChain::default_extent(const VkSurfaceCapabilitiesKHR& capabilitie
     }
 }
 
-SwapChain::SwapChain(std::shared_ptr<Device> device, Window& window, Surface& surface, Settings& settings) :
+SwapChain::SwapChain(Device &device, Window& window, Surface& surface, Settings& settings) :
     device(device) 
 {
-    PhysicalDevice& physical_device = *device->physical_device;
+    PhysicalDevice& physical_device = device.physical_device;
     SwapChainDetails swap_chain_support(physical_device, surface);
     
     // Set default settings (maybe allow passing as parameters in the future?)
@@ -105,24 +105,42 @@ SwapChain::SwapChain(std::shared_ptr<Device> device, Window& window, Surface& su
     create_info.clipped = VK_TRUE;
     create_info.oldSwapchain = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(device->get(), &create_info, nullptr, &swap_chain) != VK_SUCCESS) {
+    if (vkCreateSwapchainKHR(device.get(), &create_info, nullptr, &swap_chain) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create swapchain");
     }
 
-    vkGetSwapchainImagesKHR(device->get(), swap_chain, &image_count, nullptr);
+    vkGetSwapchainImagesKHR(device.get(), swap_chain, &image_count, nullptr);
     images.resize(image_count);
-    vkGetSwapchainImagesKHR(device->get(), swap_chain, &image_count, images.data());
+    vkGetSwapchainImagesKHR(device.get(), swap_chain, &image_count, images.data());
 
     for (auto &image : images) {
-        std::unique_ptr<ImageView> image_view = std::make_unique<ImageView>(device, image, image_format);
+        Logger::log("Adding Image View");
+        auto image_view = std::make_unique<ImageView>(device, image, image_format);
         image_views.push_back(std::move(image_view));
     }
 }
 
 SwapChain::~SwapChain() {
-    vkDestroySwapchainKHR(device->get(), swap_chain, nullptr);
+    Logger::log("Freeing Swapchain", Logger::VERBOSE);
+    vkDestroySwapchainKHR(device.get(), swap_chain, nullptr);
 }
 
 VkSwapchainKHR SwapChain::get() {
     return swap_chain;
+}
+
+VkExtent2D SwapChain::get_extent() {
+    return extent;
+}
+
+ImageIndex SwapChain::get_next_image(Semaphore &semaphore) {
+    ImageIndex index;
+    vkAcquireNextImageKHR(device.get(), swap_chain, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &index);
+    return index;
+}
+
+ImageIndex SwapChain::get_next_image(Fence& fence) {
+    ImageIndex index;
+    vkAcquireNextImageKHR(device.get(), swap_chain, UINT64_MAX, VK_NULL_HANDLE, fence.get(), &index);
+    return index;
 }

@@ -1,6 +1,7 @@
 #include "ImageView.h"
+#include "Logger.h"
 
-ImageView::ImageView(std::shared_ptr<Device> device, VkImage& image, VkFormat image_format) :
+ImageView::ImageView(Device &device, VkImage& image, VkFormat image_format) :
 	device(device)
 {
 	VkImageViewCreateInfo create_info{};
@@ -18,13 +19,14 @@ ImageView::ImageView(std::shared_ptr<Device> device, VkImage& image, VkFormat im
 	create_info.subresourceRange.baseArrayLayer = 0;
 	create_info.subresourceRange.layerCount = 1;
 
-	if (vkCreateImageView(device->get(), &create_info, nullptr, &image_view) != VK_SUCCESS) {
+	if (vkCreateImageView(device.get(), &create_info, nullptr, &image_view) != VK_SUCCESS) {
 		throw std::runtime_error("Could not create image views");
 	}
 }
 
 ImageView::~ImageView() {
-	vkDestroyImageView(device->get(), image_view, nullptr);
+	Logger::log("Freeing Image View", Logger::VERBOSE);
+	vkDestroyImageView(device.get(), image_view, nullptr);
 }
 
 VkImageView ImageView::get() {

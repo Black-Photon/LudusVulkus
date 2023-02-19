@@ -1,6 +1,7 @@
 #include "RenderPass.h"
+#include "Logger.h"
 
-RenderPass::RenderPass(std::shared_ptr<Device> device, SwapChain &swap_chain) :
+RenderPass::RenderPass(Device &device, SwapChain &swap_chain, std::vector<SubpassDependency> dependancies) :
     device(device)
 {
     VkAttachmentDescription color_attachment{};
@@ -29,13 +30,14 @@ RenderPass::RenderPass(std::shared_ptr<Device> device, SwapChain &swap_chain) :
     render_pass_info.subpassCount = 1;
     render_pass_info.pSubpasses = &subpass;
 
-    if (vkCreateRenderPass(device->get(), &render_pass_info, nullptr, &render_pass) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device.get(), &render_pass_info, nullptr, &render_pass) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass");
     }
 }
 
 RenderPass::~RenderPass() {
-    vkDestroyRenderPass(device->get(), render_pass, nullptr);
+    Logger::log("Freeing Render Pass", Logger::VERBOSE);
+    vkDestroyRenderPass(device.get(), render_pass, nullptr);
 }
 
 VkRenderPass RenderPass::get() {

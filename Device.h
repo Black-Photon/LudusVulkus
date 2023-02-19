@@ -7,26 +7,28 @@
 #include <stdexcept>
 #include <set>
 
-#include "Queue.h"
 #include "PhysicalDevice.h"
-#include "Settings.h"
+class Settings;
+class QueueFamily;
+class Queue;
+enum QueueType;
 
 class Device {
 public:
-	Device(std::shared_ptr<PhysicalDevice> physical_device,
-		QueueFamily& queue_family,
-		Settings& settings,
-		std::set<std::string> required_extensions,
-		std::set<std::string> required_layers);
+	Device(const PhysicalDevice &physical_device,
+		const QueueFamily& queue_family,
+		const Settings& settings,
+		const std::set<std::string> &required_extensions,
+		const std::set<std::string> &required_layers);
 	Device(const Device&) = delete;
 	~Device();
 
 	VkDevice& get();
 
-	std::shared_ptr<PhysicalDevice> physical_device;
+	PhysicalDevice physical_device;
+	std::map<QueueType, std::shared_ptr<Queue>> queues;
 
 private:
-	std::map<QueueType, std::shared_ptr<Queue>> queues;
 	VkDevice device;
 };
 

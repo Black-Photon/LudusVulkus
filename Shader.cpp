@@ -4,8 +4,9 @@
 #include <stdexcept>
 
 #include "Helper.h"
+#include "Logger.h"
 
-Shader::Shader(std::string filename, std::shared_ptr<Device> device) :
+Shader::Shader(Device &device, std::string filename) :
 	device(device)
 {
 	std::vector<char> shader_code = read_file(filename);
@@ -15,13 +16,14 @@ Shader::Shader(std::string filename, std::shared_ptr<Device> device) :
 	create_info.codeSize = shader_code.size();
 	create_info.pCode = reinterpret_cast<const uint32_t*>(shader_code.data());
 
-	if (vkCreateShaderModule(device->get(), &create_info, nullptr, &shader_module) != VK_SUCCESS) {
+	if (vkCreateShaderModule(device.get(), &create_info, nullptr, &shader_module) != VK_SUCCESS) {
 		throw std::runtime_error("Could not create shader module");
 	}
 }
 
 Shader::~Shader() {
-	vkDestroyShaderModule(device->get(), shader_module, nullptr);
+	Logger::log("Freeing Shader", Logger::VERBOSE);
+	vkDestroyShaderModule(device.get(), shader_module, nullptr);
 }
 
 VkShaderModule Shader::get() {
