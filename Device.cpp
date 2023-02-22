@@ -75,3 +75,7 @@ Device::~Device() {
 VkDevice& Device::get() {
 	return device;
 }
+
+void Device::wait_idle() {
+	vkDeviceWaitIdle(device);
+}

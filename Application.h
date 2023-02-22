@@ -18,33 +18,27 @@
 
 class Application {
 public:
-	std::string name;
-	Version version;
+	static std::string name;
+	static Version version;
 
+    Application(Instance& instance, Device& device, Window& window, Surface& surface, Settings& settings);
     virtual ~Application();
 
-	virtual void prepare(Window& window);
+	virtual void prepare();
 	virtual void update();
+    virtual void on_close();
 
 protected:
-    std::unique_ptr<Instance> instance;
-    std::unique_ptr<Surface> surface;
-    std::vector<PhysicalDevice> physical_devices;
-    std::vector<std::unique_ptr<Device>> devices;
+    Instance* instance;
+    Device* device;
+    Window* window;
+    Surface* surface;
+    Settings settings;
 
-    Device *main_device;
     std::unique_ptr<SwapChain> swap_chain;
     std::unique_ptr<RenderPass> render_pass;
     std::unique_ptr<Pipeline> pipeline;
     std::vector<std::unique_ptr<Framebuffer>> framebuffers;
     std::unique_ptr<CommandPool> command_pool;
-
-    Settings settings;
-
-    void setup_settings();
-    bool is_mobile();
-    std::set<std::string> prepare_extensions();
-    std::set<std::string> prepare_device_extensions();
-    std::set<std::string> select_validation_layers();
 };
 

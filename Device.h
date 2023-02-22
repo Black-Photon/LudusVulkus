@@ -25,6 +25,8 @@ public:
 
 	VkDevice& get();
 
+	void wait_idle();
+
 	PhysicalDevice physical_device;
 	std::map<QueueType, std::shared_ptr<Queue>> queues;
 

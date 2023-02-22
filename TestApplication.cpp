@@ -2,29 +2,29 @@
 
 #include "Logger.h"
 
-TestApplication::TestApplication() {
-	name = "Triangle Engine";
-	version = { 1, 0, 0 };
+TestApplication::TestApplication(Instance& instance, Device& device, Window& window, Surface& surface, Settings& settings) :
+	Application(instance, device, window, surface, settings)
+{
 }
 
 TestApplication::~TestApplication() {
 	Logger::log("Deleting test app");
 }
 
-void TestApplication::prepare(Window& window) {
-	Application::prepare(window);
+void TestApplication::prepare() {
+	Application::prepare();
 
-	image_available = std::make_unique<Semaphore>(*main_device);
-	render_finished = std::make_unique<Semaphore>(*main_device);
-	image_in_flight = std::make_unique<Fence>(*main_device);
+	image_available = std::make_unique<Semaphore>(*device);
+	render_finished = std::make_unique<Semaphore>(*device);
+	image_in_flight = std::make_unique<Fence>(*device);
 }
 
 void TestApplication::update() {
 	Application::update();
 
 	CommandBuffer& command_buffer = *command_pool->command_buffers.at(0);
-	Queue& graphics_queue = *main_device->queues.at(GRAPHICS);
-	Queue& present_queue = *main_device->queues.at(PRESENT);
+	Queue& graphics_queue = *device->queues.at(GRAPHICS);
+	Queue& present_queue = *device->queues.at(PRESENT);
 
 	image_in_flight->wait();
 	image_in_flight->reset();
@@ -52,4 +52,10 @@ void TestApplication::update() {
 	graphics_queue.submit(command_buffer, wait_semaphores, signal_semaphores, image_in_flight.get());
 
 	present_queue.present(*swap_chain, image_index, signal_semaphores);
+}
+
+void TestApplication::on_close() {
+	Application::on_close();
+
+	device->wait_idle();
 }

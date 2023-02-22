@@ -14,9 +14,9 @@ int main() {
     glfwInit();
 
     try {
-        auto app = std::make_unique<TestApplication>();
+        //auto app = std::make_unique<TestApplication>();
 
-        LudusVulkus ludus_vulkus(std::move(app));
+        LudusVulkus<TestApplication> ludus_vulkus;
         ludus_vulkus.run();
     } catch (const std::exception& e) {
         Logger::log(e.what(), Logger::FATAL);
