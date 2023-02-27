@@ -7,16 +7,14 @@
 
 #include "LudusVulkus.h"
 #include "Logger.h"
-#include "TestApplication.h"
+#include "TriangleEngine.h"
 
 int main() {
     // Load GLFW for future use
     glfwInit();
 
     try {
-        //auto app = std::make_unique<TestApplication>();
-
-        LudusVulkus<TestApplication> ludus_vulkus;
+        LudusVulkus<TriangleEngine> ludus_vulkus;
         ludus_vulkus.run();
     } catch (const std::exception& e) {
         Logger::log(e.what(), Logger::FATAL);

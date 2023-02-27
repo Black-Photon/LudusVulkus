@@ -37,7 +37,6 @@ void Application::prepare() {
     }
 
     command_pool = std::make_unique<CommandPool>(*device);
-    CommandBuffer& command_buffer = command_pool->create_command_buffer();
 }
 
 void Application::update() {

@@ -195,7 +195,7 @@
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="SwapChainDetails.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestApplication.h" />
+    <ClInclude Include="TriangleEngine.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="ValidationLayers.h" />
     <ClInclude Include="VulkanEXT.h" />
@@ -213,7 +213,6 @@
     <ClCompile Include="ImageView.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Device.cpp" />
-    <ClCompile Include="LudusVulkus.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PhysicalDevice.cpp" />
     <ClCompile Include="Pipeline.cpp" />
@@ -226,7 +225,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="SwapChainDetails.cpp" />
-    <ClCompile Include="TestApplication.cpp" />
+    <ClCompile Include="TriangleEngine.cpp" />
     <ClCompile Include="ValidationLayers.cpp" />
     <ClCompile Include="VulkanEXT.cpp" />
     <ClCompile Include="Window.cpp" />

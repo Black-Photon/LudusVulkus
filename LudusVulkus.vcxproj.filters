@@ -60,7 +60,7 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestApplication.h">
+    <ClInclude Include="TriangleEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Instance.h">
@@ -143,16 +143,13 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LudusVulkus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestApplication.cpp">
+    <ClCompile Include="TriangleEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Instance.cpp">
