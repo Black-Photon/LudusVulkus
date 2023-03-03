@@ -134,13 +134,20 @@ VkExtent2D SwapChain::get_extent() {
 }
 
 ImageIndex SwapChain::get_next_image(Semaphore &semaphore) {
-    ImageIndex index;
-    vkAcquireNextImageKHR(device.get(), swap_chain, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &index);
-    return index;
+    return get_next_image(semaphore.get(), VK_NULL_HANDLE);
 }
 
 ImageIndex SwapChain::get_next_image(Fence& fence) {
+    return get_next_image(VK_NULL_HANDLE, fence.get());
+}
+
+ImageIndex SwapChain::get_next_image(VkSemaphore semaphore, VkFence fence) {
     ImageIndex index;
-    vkAcquireNextImageKHR(device.get(), swap_chain, UINT64_MAX, VK_NULL_HANDLE, fence.get(), &index);
+    VkResult result = vkAcquireNextImageKHR(device.get(), swap_chain, UINT64_MAX, semaphore, fence, &index);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        throw SwapChainOutdated();
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to get the next swapchain image");
+    }
     return index;
 }

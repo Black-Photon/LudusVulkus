@@ -26,6 +26,7 @@ public:
 
 	virtual void prepare();
 	virtual void update();
+    virtual void recreate_swapchain();
     virtual void on_close();
 
 protected:

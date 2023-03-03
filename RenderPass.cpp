@@ -1,11 +1,11 @@
 #include "RenderPass.h"
 #include "Logger.h"
 
-RenderPass::RenderPass(Device &device, SwapChain &swap_chain, std::vector<SubpassDependency> dependancies) :
+RenderPass::RenderPass(Device &device, VkFormat &image_format, std::vector<SubpassDependency> dependancies) :
     device(device)
 {
     VkAttachmentDescription color_attachment{};
-    color_attachment.format = swap_chain.image_format;
+    color_attachment.format = image_format;
     color_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
     color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;

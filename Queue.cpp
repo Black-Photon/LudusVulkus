@@ -78,7 +78,14 @@ void Queue::present(SwapChain& swap_chain, uint32_t index, std::vector<Semaphore
 	present_info.pImageIndices = &index;
 	present_info.pResults = nullptr;
 
-	vkQueuePresentKHR(queue.value(), &present_info);
+	VkResult result = vkQueuePresentKHR(queue.value(), &present_info);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+		throw SwapChainOutdated();
+	} else if (result != VK_SUCCESS) {
+		throw std::runtime_error("Failed to present image");
+	}
+
 }
 
 void Queue::assert_setup() {

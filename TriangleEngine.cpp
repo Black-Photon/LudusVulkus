@@ -8,7 +8,7 @@ TriangleEngine::TriangleEngine(Instance& instance, Device& device, Window& windo
 }
 
 TriangleEngine::~TriangleEngine() {
-	Logger::log("Deleting test app");
+	Logger::log("Deleting triangle engine");
 }
 
 void TriangleEngine::prepare() {
@@ -29,14 +29,20 @@ void TriangleEngine::update() {
 
 	Frame& frame = *frames.at(current_frame);
 
+	frame.image_in_flight->wait();
+
 	CommandBuffer& command_buffer = frame.command_buffer;
 	Queue& graphics_queue = *device->queues.at(GRAPHICS);
 	Queue& present_queue = *device->queues.at(PRESENT);
+	ImageIndex image_index = swap_chain->get_next_image(*frame.image_available);
 
-	frame.image_in_flight->wait();
 	frame.image_in_flight->reset();
 
-	ImageIndex image_index = swap_chain->get_next_image(*frame.image_available);
+	auto wait_semaphores = std::vector<std::pair<Semaphore*, PipelineStage>>();
+	wait_semaphores.push_back(std::pair(frame.image_available.get(), ColourAttachmentOutput));
+
+	auto signal_semaphores = std::vector<Semaphore*>();
+	signal_semaphores.push_back(frame.render_finished.get());
 
 	command_buffer.reset();
 	command_buffer.start_recording();
@@ -49,12 +55,6 @@ void TriangleEngine::update() {
 	command_buffer.cmd_end_render_pass();
 
 	command_buffer.stop_recording();
-
-	auto wait_semaphores = std::vector<std::pair<Semaphore *, PipelineStage>>();
-	wait_semaphores.push_back(std::pair(frame.image_available.get(), ColourAttachmentOutput));
-
-	auto signal_semaphores = std::vector<Semaphore *>();
-	signal_semaphores.push_back(frame.render_finished.get());
 
 	graphics_queue.submit(command_buffer, wait_semaphores, signal_semaphores, frame.image_in_flight.get());
 
