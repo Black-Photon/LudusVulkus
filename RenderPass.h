@@ -7,7 +7,7 @@
 
 class RenderPass {
 public:
-	RenderPass(Device &device, VkFormat& image_format, std::vector<SubpassDependency> dependancies = {});
+	RenderPass(Device &device, VkFormat& image_format, std::vector<SubpassDependency> dependencies = {});
 	~RenderPass();
 
 	VkRenderPass get();

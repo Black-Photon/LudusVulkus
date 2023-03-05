@@ -1,7 +1,7 @@
 #include "RenderPass.h"
 #include "Logger.h"
 
-RenderPass::RenderPass(Device &device, VkFormat &image_format, std::vector<SubpassDependency> dependancies) :
+RenderPass::RenderPass(Device &device, VkFormat &image_format, std::vector<SubpassDependency> dependencies) :
     device(device)
 {
     VkAttachmentDescription color_attachment{};
@@ -23,12 +23,19 @@ RenderPass::RenderPass(Device &device, VkFormat &image_format, std::vector<Subpa
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &color_attachment_reference;
 
+    std::vector<VkSubpassDependency> vk_dependencies;
+    for (SubpassDependency& dependency : dependencies) {
+        vk_dependencies.push_back(dependency.get());
+    }
+
     VkRenderPassCreateInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_info.attachmentCount = 1;
     render_pass_info.pAttachments = &color_attachment;
     render_pass_info.subpassCount = 1;
     render_pass_info.pSubpasses = &subpass;
+    render_pass_info.dependencyCount = vk_dependencies.size();
+    render_pass_info.pDependencies = vk_dependencies.data();
 
     if (vkCreateRenderPass(device.get(), &render_pass_info, nullptr, &render_pass) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass");

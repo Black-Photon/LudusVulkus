@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "Semaphore.h"
 #include "Fence.h"
+#include "TriangleRenderPass.h"
 
 #define FRAMES_IN_FLIGHT 2
 
@@ -25,10 +26,12 @@ public:
 
 	void prepare() override;
 	void update() override;
+	void recreate_swapchain() override;
 	void on_close() override;
 
 private:
 	uint32_t current_frame = 0;
 	std::array<std::unique_ptr<Frame>, FRAMES_IN_FLIGHT> frames;
+	std::unique_ptr<TriangleRenderPass> render_pass;
 };
 

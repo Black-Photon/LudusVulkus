@@ -14,6 +14,10 @@ TriangleEngine::~TriangleEngine() {
 void TriangleEngine::prepare() {
 	Application::prepare();
 
+	render_pass = std::make_unique<TriangleRenderPass>(*device, *swap_chain);
+	render_pass->prepare_framebuffers();
+	render_pass->prepare_pipeline();
+
 	for (uint32_t i = 0; i < FRAMES_IN_FLIGHT; i++) {
 		frames[i] = std::make_unique<Frame>(
 			command_pool->create_command_buffer(),
@@ -46,14 +50,7 @@ void TriangleEngine::update() {
 
 	command_buffer.reset();
 	command_buffer.start_recording();
-
-	command_buffer.cmd_begin_render_pass(*render_pass, *framebuffers.at(image_index));
-	command_buffer.cmd_bind_pipeline(*pipeline);
-	command_buffer.cmd_set_scissor();
-	command_buffer.cmd_set_viewport();
-	command_buffer.cmd_draw();
-	command_buffer.cmd_end_render_pass();
-
+	render_pass->record_commands(command_buffer, image_index);
 	command_buffer.stop_recording();
 
 	graphics_queue.submit(command_buffer, wait_semaphores, signal_semaphores, frame.image_in_flight.get());
@@ -67,4 +64,12 @@ void TriangleEngine::on_close() {
 	Application::on_close();
 
 	device->wait_idle();
+}
+
+void TriangleEngine::recreate_swapchain() {
+	Application::recreate_swapchain();
+
+	Logger::log("Refreshing framebuffers", Logger::VERBOSE);
+	render_pass->update_swapchain(*swap_chain);
+	render_pass->prepare_framebuffers();
 }

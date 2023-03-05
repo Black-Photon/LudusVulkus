@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Vulkan\Synchronisation">
       <UniqueIdentifier>{d7098559-916c-4f4d-b1bd-655e1dff200e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\TriangleEngine">
+      <UniqueIdentifier>{2474f46a-92ff-40cb-873a-3510e4fb4ce6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="SubpassDependency.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TriangleRenderPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -147,9 +153,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TriangleEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Instance.cpp">
@@ -220,6 +223,12 @@
     </ClCompile>
     <ClCompile Include="SubpassDependency.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="TriangleEngine.cpp">
+      <Filter>Source Files\TriangleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="TriangleRenderPass.cpp">
+      <Filter>Source Files\TriangleEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

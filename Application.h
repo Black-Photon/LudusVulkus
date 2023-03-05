@@ -37,9 +37,6 @@ protected:
     Settings settings;
 
     std::unique_ptr<SwapChain> swap_chain;
-    std::unique_ptr<RenderPass> render_pass;
-    std::unique_ptr<Pipeline> pipeline;
-    std::vector<std::unique_ptr<Framebuffer>> framebuffers;
     std::unique_ptr<CommandPool> command_pool;
 };
 
