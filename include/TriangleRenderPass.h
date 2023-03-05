@@ -1,11 +1,18 @@
 #pragma once
 #include "RenderPass.h"
 
+#include <glm/glm.hpp>
+
 #include "Pipeline.h"
 #include "Framebuffer.h"
 #include "Shader.h"
 #include "SwapChain.h"
 #include "CommandBuffer.h"
+
+struct Vertex {
+	glm::vec2 pos;
+	glm::vec3 color;
+};
 
 class TriangleRenderPass {
 public:

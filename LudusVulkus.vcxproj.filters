@@ -42,223 +42,218 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="include\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="include\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="include\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LudusVulkus.h">
+    <ClInclude Include="include\LudusVulkus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
+    <ClInclude Include="include\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="include\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
+    <ClInclude Include="include\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TriangleEngine.h">
+    <ClInclude Include="include\TriangleEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Instance.h">
+    <ClInclude Include="include\Instance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ValidationLayers.h">
+    <ClInclude Include="include\ValidationLayers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
+    <ClInclude Include="include\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanEXT.h">
+    <ClInclude Include="include\VulkanEXT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugMessenger.h">
+    <ClInclude Include="include\DebugMessenger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicalDevice.h">
+    <ClInclude Include="include\PhysicalDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
+    <ClInclude Include="include\Device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueueFamily.h">
+    <ClInclude Include="include\QueueFamily.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Queue.h">
+    <ClInclude Include="include\Queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Surface.h">
+    <ClInclude Include="include\Surface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SwapChainDetails.h">
+    <ClInclude Include="include\SwapChainDetails.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SwapChain.h">
+    <ClInclude Include="include\SwapChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImageView.h">
+    <ClInclude Include="include\ImageView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="include\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper.h">
+    <ClInclude Include="include\Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline.h">
+    <ClInclude Include="include\Pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicState.h">
+    <ClInclude Include="include\DynamicState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderPass.h">
+    <ClInclude Include="include\RenderPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Framebuffer.h">
+    <ClInclude Include="include\Framebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandPool.h">
+    <ClInclude Include="include\CommandPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuffer.h">
+    <ClInclude Include="include\CommandBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Semaphore.h">
+    <ClInclude Include="include\Semaphore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Fence.h">
+    <ClInclude Include="include\Fence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Type.h">
+    <ClInclude Include="include\Type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SubpassDependency.h">
+    <ClInclude Include="include\SubpassDependency.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TriangleRenderPass.h">
+    <ClInclude Include="include\TriangleRenderPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AttributeDescriptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
+    <ClCompile Include="src\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
+    <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Instance.cpp">
+    <ClCompile Include="src\Vulkan\Instance.cpp">
       <Filter>Source Files\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Helper.cpp">
+    <ClCompile Include="src\Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
+    <ClCompile Include="src\Vulkan\Device\Device.cpp">
       <Filter>Source Files\Vulkan\Device</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicalDevice.cpp">
+    <ClCompile Include="src\Vulkan\Device\PhysicalDevice.cpp">
       <Filter>Source Files\Vulkan\Device</Filter>
     </ClCompile>
-    <ClCompile Include="Queue.cpp">
+    <ClCompile Include="src\Vulkan\Device\Queue.cpp">
       <Filter>Source Files\Vulkan\Device</Filter>
     </ClCompile>
-    <ClCompile Include="QueueFamily.cpp">
+    <ClCompile Include="src\Vulkan\Device\QueueFamily.cpp">
       <Filter>Source Files\Vulkan\Device</Filter>
     </ClCompile>
-    <ClCompile Include="CommandBuffer.cpp">
+    <ClCompile Include="src\Vulkan\Command\CommandBuffer.cpp">
       <Filter>Source Files\Vulkan\Command</Filter>
     </ClCompile>
-    <ClCompile Include="CommandPool.cpp">
+    <ClCompile Include="src\Vulkan\Command\CommandPool.cpp">
       <Filter>Source Files\Vulkan\Command</Filter>
     </ClCompile>
-    <ClCompile Include="SwapChain.cpp">
+    <ClCompile Include="src\Vulkan\Presentation\SwapChain.cpp">
       <Filter>Source Files\Vulkan\Presentation</Filter>
     </ClCompile>
-    <ClCompile Include="SwapChainDetails.cpp">
+    <ClCompile Include="src\Vulkan\Presentation\SwapChainDetails.cpp">
       <Filter>Source Files\Vulkan\Presentation</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanEXT.cpp">
+    <ClCompile Include="src\Vulkan\Meta\VulkanEXT.cpp">
       <Filter>Source Files\Vulkan\Meta</Filter>
     </ClCompile>
-    <ClCompile Include="ValidationLayers.cpp">
+    <ClCompile Include="src\Vulkan\Meta\ValidationLayers.cpp">
       <Filter>Source Files\Vulkan\Meta</Filter>
     </ClCompile>
-    <ClCompile Include="Surface.cpp">
+    <ClCompile Include="src\Vulkan\Presentation\Surface.cpp">
       <Filter>Source Files\Vulkan\Presentation</Filter>
     </ClCompile>
-    <ClCompile Include="RenderPass.cpp">
+    <ClCompile Include="src\Vulkan\Pipeline\RenderPass.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline.cpp">
+    <ClCompile Include="src\Vulkan\Pipeline\Pipeline.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="ImageView.cpp">
+    <ClCompile Include="src\Vulkan\Presentation\ImageView.cpp">
       <Filter>Source Files\Vulkan\Presentation</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="src\Vulkan\Pipeline\Shader.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="DebugMessenger.cpp">
+    <ClCompile Include="src\Vulkan\Meta\DebugMessenger.cpp">
       <Filter>Source Files\Vulkan\Meta</Filter>
     </ClCompile>
-    <ClCompile Include="Framebuffer.cpp">
+    <ClCompile Include="src\Vulkan\Presentation\Framebuffer.cpp">
       <Filter>Source Files\Vulkan\Presentation</Filter>
     </ClCompile>
-    <ClCompile Include="DynamicState.cpp">
+    <ClCompile Include="src\Vulkan\Pipeline\DynamicState.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Fence.cpp">
+    <ClCompile Include="src\Vulkan\Synchronisation\Fence.cpp">
       <Filter>Source Files\Vulkan\Synchronisation</Filter>
     </ClCompile>
-    <ClCompile Include="Semaphore.cpp">
+    <ClCompile Include="src\Vulkan\Synchronisation\Semaphore.cpp">
       <Filter>Source Files\Vulkan\Synchronisation</Filter>
     </ClCompile>
-    <ClCompile Include="SubpassDependency.cpp">
+    <ClCompile Include="src\Vulkan\Synchronisation\SubpassDependency.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="TriangleEngine.cpp">
+    <ClCompile Include="src\TriangleEngine\TriangleEngine.cpp">
       <Filter>Source Files\TriangleEngine</Filter>
     </ClCompile>
-    <ClCompile Include="TriangleRenderPass.cpp">
+    <ClCompile Include="src\TriangleEngine\TriangleRenderPass.cpp">
       <Filter>Source Files\TriangleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LudusVulkus.rc">
+    <None Include="assets\shaders\glsl\Triangle.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\glsl\Triangle.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="scripts\CompileShader.bat">
       <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="LudusVulkus.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shader.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shader.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="CompileShader.bat">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Fragment.spv">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Vertex.spv">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
+    <Text Include="scripts\CompileShader.py" />
+    <Text Include="assets\shaders\glsl\Vertices.frag" />
+    <Text Include="assets\shaders\glsl\Vertices.vert" />
   </ItemGroup>
 </Project>

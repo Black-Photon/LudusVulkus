@@ -5,11 +5,12 @@
 
 #include "Helper.h"
 #include "Logger.h"
+#include "Constants.h"
 
 Shader::Shader(Device &device, std::string filename) :
 	device(device)
 {
-	std::vector<char> shader_code = read_file(filename);
+	std::vector<char> shader_code = read_file(Constants::shader_path + "/" + filename);
 
 	VkShaderModuleCreateInfo create_info{};
 	create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

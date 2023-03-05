@@ -2,9 +2,19 @@
 
 #include "Logger.h"
 
-Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, Device &device, RenderPass &render_pass) :
+Pipeline::Pipeline(Device& device) :
 	device(device)
 {
+}
+
+Pipeline::~Pipeline() {
+	if (!setup) return;
+	Logger::log("Freeing Pipeline", Logger::VERBOSE);
+	vkDestroyPipelineLayout(device.get(), pipeline_layout, nullptr);
+	vkDestroyPipeline(device.get(), pipeline, nullptr);
+}
+
+void Pipeline::create(Shader& vertex_shader, Shader& fragment_shader, RenderPass &render_pass) {
 	VkPipelineShaderStageCreateInfo vertex_stage_info = create_shader_stage(vertex_shader, VERTEX);
 	VkPipelineShaderStageCreateInfo fragment_stage_info = create_shader_stage(fragment_shader, FRAGMENT);
 	VkPipelineShaderStageCreateInfo shader_stage_infos[] = { vertex_stage_info, fragment_stage_info };
@@ -56,19 +66,25 @@ Pipeline::Pipeline(Shader& vertex_shader, Shader& fragment_shader, Device &devic
 	if (vkCreateGraphicsPipelines(device.get(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &pipeline) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create pipeline");
 	}
+
+	setup = true;
 }
 
-Pipeline::~Pipeline() {
-	Logger::log("Freeing Pipeline", Logger::VERBOSE);
-	vkDestroyPipelineLayout(device.get(), pipeline_layout, nullptr);
-	vkDestroyPipeline(device.get(), pipeline, nullptr);
+void Pipeline::set_attribute_descriptor(AttributeDescriptor attribute_descriptor) {
+	this->attribute_descriptor = attribute_descriptor;
 }
 
 VkPipeline Pipeline::get() {
+	if (!setup) {
+		throw std::runtime_error("Pipeline has not been setup with create()");
+	}
 	return pipeline;
 }
 
 VkPipelineLayout Pipeline::get_layout() {
+	if (!setup) {
+		throw std::runtime_error("Pipeline has not been setup with create()");
+	}
 	return pipeline_layout;
 }
 
@@ -101,10 +117,17 @@ VkPipelineDynamicStateCreateInfo Pipeline::create_dynamic_state(DynamicState& dy
 VkPipelineVertexInputStateCreateInfo Pipeline::create_vertex_input_state() {
 	VkPipelineVertexInputStateCreateInfo vertex_input_info{};
 	vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertex_input_info.vertexBindingDescriptionCount = 0;
-	vertex_input_info.pVertexBindingDescriptions = nullptr;
-	vertex_input_info.vertexAttributeDescriptionCount = 0;
-	vertex_input_info.pVertexAttributeDescriptions = nullptr;
+	if (attribute_descriptor.has_value()) {
+		vertex_input_info.vertexBindingDescriptionCount = 1;
+		vertex_input_info.pVertexBindingDescriptions = &attribute_descriptor->binding_descriptor;
+		vertex_input_info.vertexAttributeDescriptionCount = attribute_descriptor->attribute_descriptors.size();
+		vertex_input_info.pVertexAttributeDescriptions = attribute_descriptor->attribute_descriptors.data();
+	} else {
+		vertex_input_info.vertexBindingDescriptionCount = 0;
+		vertex_input_info.pVertexBindingDescriptions = nullptr;
+		vertex_input_info.vertexAttributeDescriptionCount = 0;
+		vertex_input_info.pVertexAttributeDescriptions = nullptr;
+	}
 	return vertex_input_info;
 }
 

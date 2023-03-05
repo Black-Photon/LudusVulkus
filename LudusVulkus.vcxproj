@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\josep\source\repos\glfw-3.3.8\include;C:\VulkanSDK\1.3.236.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\josep\source\repos\glfw-3.3.8\include;C:\VulkanSDK\1.3.236.0\Include;C:\Users\josep\Documents\Programming\LudusVulkus\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +134,7 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>.\CompileShader.bat</Command>
+      <Command>python3 .\scripts\CompileShader.py</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Compiling shaders from GLSL to SPIR-V</Message>
@@ -149,7 +149,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\josep\source\repos\glfw-3.3.8\include;C:\VulkanSDK\1.3.236.0\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\josep\source\repos\glfw-3.3.8\include;C:\VulkanSDK\1.3.236.0\Include;C:\Users\josep\Documents\Programming\LudusVulkus\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,91 +160,90 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>.\CompileShader.bat</Command>
+      <Command>python3 .\scripts\CompileShader.py</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Compiling shaders from GLSL to SPIR-V</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="CommandBuffer.h" />
-    <ClInclude Include="CommandPool.h" />
-    <ClInclude Include="DebugMessenger.h" />
-    <ClInclude Include="DynamicState.h" />
-    <ClInclude Include="Fence.h" />
-    <ClInclude Include="Framebuffer.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Helper.h" />
-    <ClInclude Include="ImageView.h" />
-    <ClInclude Include="Instance.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="LudusVulkus.h" />
-    <ClInclude Include="PhysicalDevice.h" />
-    <ClInclude Include="Pipeline.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="QueueFamily.h" />
-    <ClInclude Include="RenderPass.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Semaphore.h" />
-    <ClInclude Include="Settings.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="SubpassDependency.h" />
-    <ClInclude Include="Surface.h" />
-    <ClInclude Include="SwapChain.h" />
-    <ClInclude Include="SwapChainDetails.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="TriangleEngine.h" />
-    <ClInclude Include="TriangleRenderPass.h" />
-    <ClInclude Include="Type.h" />
-    <ClInclude Include="ValidationLayers.h" />
-    <ClInclude Include="VulkanEXT.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="include\AttributeDescriptor.h" />
+    <ClInclude Include="include\Application.h" />
+    <ClInclude Include="include\CommandBuffer.h" />
+    <ClInclude Include="include\CommandPool.h" />
+    <ClInclude Include="include\DebugMessenger.h" />
+    <ClInclude Include="include\DynamicState.h" />
+    <ClInclude Include="include\Fence.h" />
+    <ClInclude Include="include\Framebuffer.h" />
+    <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\Constants.h" />
+    <ClInclude Include="include\Helper.h" />
+    <ClInclude Include="include\ImageView.h" />
+    <ClInclude Include="include\Instance.h" />
+    <ClInclude Include="include\Logger.h" />
+    <ClInclude Include="include\Device.h" />
+    <ClInclude Include="include\LudusVulkus.h" />
+    <ClInclude Include="include\PhysicalDevice.h" />
+    <ClInclude Include="include\Pipeline.h" />
+    <ClInclude Include="include\Queue.h" />
+    <ClInclude Include="include\QueueFamily.h" />
+    <ClInclude Include="include\RenderPass.h" />
+    <ClInclude Include="include\Resource.h" />
+    <ClInclude Include="include\Semaphore.h" />
+    <ClInclude Include="include\Settings.h" />
+    <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\SubpassDependency.h" />
+    <ClInclude Include="include\Surface.h" />
+    <ClInclude Include="include\SwapChain.h" />
+    <ClInclude Include="include\SwapChainDetails.h" />
+    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\TriangleEngine.h" />
+    <ClInclude Include="include\TriangleRenderPass.h" />
+    <ClInclude Include="include\Type.h" />
+    <ClInclude Include="include\ValidationLayers.h" />
+    <ClInclude Include="include\VulkanEXT.h" />
+    <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="CommandBuffer.cpp" />
-    <ClCompile Include="CommandPool.cpp" />
-    <ClCompile Include="DebugMessenger.cpp" />
-    <ClCompile Include="DynamicState.cpp" />
-    <ClCompile Include="Fence.cpp" />
-    <ClCompile Include="Framebuffer.cpp" />
-    <ClCompile Include="Helper.cpp" />
-    <ClCompile Include="ImageView.cpp" />
-    <ClCompile Include="Instance.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="PhysicalDevice.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="Queue.cpp" />
-    <ClCompile Include="QueueFamily.cpp" />
-    <ClCompile Include="RenderPass.cpp" />
-    <ClCompile Include="Semaphore.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SubpassDependency.cpp" />
-    <ClCompile Include="Surface.cpp" />
-    <ClCompile Include="SwapChain.cpp" />
-    <ClCompile Include="SwapChainDetails.cpp" />
-    <ClCompile Include="TriangleEngine.cpp" />
-    <ClCompile Include="TriangleRenderPass.cpp" />
-    <ClCompile Include="ValidationLayers.cpp" />
-    <ClCompile Include="VulkanEXT.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp" />
+    <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Vulkan\Command\CommandBuffer.cpp" />
+    <ClCompile Include="src\Vulkan\Command\CommandPool.cpp" />
+    <ClCompile Include="src\Vulkan\Meta\DebugMessenger.cpp" />
+    <ClCompile Include="src\Vulkan\Pipeline\DynamicState.cpp" />
+    <ClCompile Include="src\Vulkan\Synchronisation\Fence.cpp" />
+    <ClCompile Include="src\Vulkan\Presentation\Framebuffer.cpp" />
+    <ClCompile Include="src\Helper.cpp" />
+    <ClCompile Include="src\Vulkan\Presentation\ImageView.cpp" />
+    <ClCompile Include="src\Vulkan\Instance.cpp" />
+    <ClCompile Include="src\Vulkan\Device\Device.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Vulkan\Device\PhysicalDevice.cpp" />
+    <ClCompile Include="src\Vulkan\Pipeline\Pipeline.cpp" />
+    <ClCompile Include="src\Vulkan\Device\Queue.cpp" />
+    <ClCompile Include="src\Vulkan\Device\QueueFamily.cpp" />
+    <ClCompile Include="src\Vulkan\Pipeline\RenderPass.cpp" />
+    <ClCompile Include="src\Vulkan\Synchronisation\Semaphore.cpp" />
+    <ClCompile Include="src\Vulkan\Pipeline\Shader.cpp" />
+    <ClCompile Include="src\Vulkan\Synchronisation\SubpassDependency.cpp" />
+    <ClCompile Include="src\Vulkan\Presentation\Surface.cpp" />
+    <ClCompile Include="src\Vulkan\Presentation\SwapChain.cpp" />
+    <ClCompile Include="src\Vulkan\Presentation\SwapChainDetails.cpp" />
+    <ClCompile Include="src\TriangleEngine\TriangleEngine.cpp" />
+    <ClCompile Include="src\TriangleEngine\TriangleRenderPass.cpp" />
+    <ClCompile Include="src\Vulkan\Meta\ValidationLayers.cpp" />
+    <ClCompile Include="src\Vulkan\Meta\VulkanEXT.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LudusVulkus.rc" />
+    <None Include="scripts\CompileShader.bat" />
+    <None Include="assets\shaders\glsl\Triangle.frag" />
+    <None Include="assets\shaders\glsl\Triangle.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="LudusVulkus.ico" />
-    <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CompileShader.bat" />
-    <None Include="Fragment.spv" />
-    <None Include="Shader.frag" />
-    <None Include="Shader.vert" />
-    <None Include="Vertex.spv" />
+    <Text Include="assets\shaders\glsl\Vertices.vert" />
+    <Text Include="assets\shaders\glsl\Vertices.frag" />
+    <Text Include="scripts\CompileShader.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

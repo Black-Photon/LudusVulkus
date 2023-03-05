@@ -32,9 +32,24 @@ void TriangleRenderPass::prepare_framebuffers() {
 }
 
 void TriangleRenderPass::prepare_pipeline() {
-    Shader vertex_shader(device, "Vertex.spv");
-    Shader fragment_shader(device, "Fragment.spv");
-    pipeline = std::make_unique<Pipeline>(vertex_shader, fragment_shader, device, *render_pass);
+    Shader vertex_shader(device, "Vertices_vert.spv");
+    Shader fragment_shader(device, "Vertices_frag.spv");
+
+    // Describes a triangle
+    const std::vector<Vertex> vertices = {
+        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+    };
+
+    std::vector<AttributeEntry> attribute_entries;
+    attribute_entries.push_back({ VK_FORMAT_R32G32_SFLOAT , 2 * sizeof(float) });
+    attribute_entries.push_back({ VK_FORMAT_R32G32B32_SFLOAT , 3 * sizeof(float) });
+    AttributeDescriptor attribute_descriptor(attribute_entries);
+
+    pipeline = std::make_unique<Pipeline>(device);
+    pipeline->set_attribute_descriptor(attribute_descriptor);
+    pipeline->create(vertex_shader, fragment_shader, *render_pass);
 }
 
 void TriangleRenderPass::record_commands(CommandBuffer& command_buffer, uint32_t current_framebuffer) {
