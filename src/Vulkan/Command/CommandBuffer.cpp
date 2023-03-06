@@ -58,6 +58,11 @@ void CommandBuffer::cmd_bind_pipeline(Pipeline& pipeline) {
     vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 }
 
+void CommandBuffer::cmd_bind_vertex_buffer(Buffer &buffer) {
+    VkDeviceSize offsets[] = { 0 };
+    vkCmdBindVertexBuffers(command_buffer, 0, 1, &buffer.get(), offsets);
+}
+
 /**
  * Creates a default viewport that covers the whole framebuffer
  */
@@ -92,8 +97,8 @@ void CommandBuffer::cmd_set_scissor(VkRect2D scissor) {
     vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 }
 
-void CommandBuffer::cmd_draw() {
-    vkCmdDraw(command_buffer, 3, 1, 0, 0);
+void CommandBuffer::cmd_draw(size_t indices) {
+    vkCmdDraw(command_buffer, static_cast<uint32_t>(indices), 1, 0, 0);
 }
 
 void CommandBuffer::cmd_end_render_pass() {

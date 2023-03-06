@@ -22,6 +22,8 @@ public:
 	PhysicalDevice(VkPhysicalDevice device, Surface& surface);
 
 	VkPhysicalDevice get() const;
+	VkPhysicalDeviceMemoryProperties get_memory_properties() const;
+	uint32_t find_memory_type(uint32_t type_mask, VkMemoryPropertyFlags properties) const;
 		
 	std::vector<QueueFamily> queue_families;
 	std::map<QueueType, QueueFamily> selected_family;

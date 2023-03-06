@@ -23,10 +23,18 @@ public:
 	void record_commands(CommandBuffer &command_buffer, uint32_t current_framebuffer);
 
 private:
+	// Describes a triangle
+	const std::vector<Vertex> vertices = {
+		{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+		{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+		{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+	};
+
 	Device& device;
 	std::unique_ptr<RenderPass> render_pass;
 	SwapChain *swap_chain;
 	std::vector<std::unique_ptr<Framebuffer>> framebuffers;
 	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Buffer> buffer;
 };
 

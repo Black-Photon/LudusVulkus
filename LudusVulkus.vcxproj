@@ -167,6 +167,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\AttributeDescriptor.h" />
     <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\CommandBuffer.h" />

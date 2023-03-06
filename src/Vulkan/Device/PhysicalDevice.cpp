@@ -75,6 +75,24 @@ VkPhysicalDevice PhysicalDevice::get() const {
 	return device;
 }
 
+VkPhysicalDeviceMemoryProperties PhysicalDevice::get_memory_properties() const {
+	VkPhysicalDeviceMemoryProperties memory_properties;
+	vkGetPhysicalDeviceMemoryProperties(device, &memory_properties);
+	return memory_properties;
+}
+
+uint32_t PhysicalDevice::find_memory_type(uint32_t type_mask, VkMemoryPropertyFlags properties) const {
+	VkPhysicalDeviceMemoryProperties memory_properties = get_memory_properties();
+
+	for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++) {
+		if (type_mask & (1 << i) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties) {
+			return i;
+		}
+	}
+
+	throw std::runtime_error("No memory type matches mask");
+}
+
 int PhysicalDevice::find_suitability(std::set<std::string> required_extensions, Surface& surface) {
 	const int NOT_SUITABLE = INT_MIN;
 	int suitability = 0;
