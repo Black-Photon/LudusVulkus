@@ -28,10 +28,10 @@ VkCommandBuffer CommandBuffer::get() {
     return command_buffer;
 }
 
-void CommandBuffer::start_recording() {
+void CommandBuffer::start_recording(bool one_time) {
     VkCommandBufferBeginInfo begin_info{};
     begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    begin_info.flags = 0;
+    begin_info.flags = one_time ? VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT : 0;
     begin_info.pInheritanceInfo = nullptr;
 
     if (vkBeginCommandBuffer(command_buffer, &begin_info) != VK_SUCCESS) {
@@ -103,6 +103,14 @@ void CommandBuffer::cmd_draw(size_t indices) {
 
 void CommandBuffer::cmd_end_render_pass() {
     vkCmdEndRenderPass(command_buffer);
+}
+
+void CommandBuffer::cmd_copy_buffer(Buffer& src_buffer, Buffer& dest_buffer, size_t data_size) {
+    VkBufferCopy copy_region{};
+    copy_region.srcOffset = 0; // Optional
+    copy_region.dstOffset = 0; // Optional
+    copy_region.size = data_size;
+    vkCmdCopyBuffer(command_buffer, src_buffer.get(), dest_buffer.get(), 1, &copy_region);
 }
 
 void CommandBuffer::stop_recording() {

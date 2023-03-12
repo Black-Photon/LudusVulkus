@@ -8,9 +8,9 @@ TriangleRenderPass::TriangleRenderPass(Device& device, SwapChain& swap_chain, st
     SubpassDependency dependancy;
     dependancy.set_src_subpass(VK_SUBPASS_EXTERNAL);
     dependancy.set_dest_subpass(0);
-    dependancy.add_src_stage(ColourAttachmentOutput); // Only when previous has finished writing...
-    dependancy.add_dest_stage(ColourAttachmentOutput); // will we write the current subpass
-    dependancy.add_dest_access(ColourAttachmentWrite); // Only write color
+    dependancy.add_src_stage(PipelineStage::ColourAttachmentOutput); // Only when previous has finished writing...
+    dependancy.add_dest_stage(PipelineStage::ColourAttachmentOutput); // will we write the current subpass
+    dependancy.add_dest_access(PipelineAccess::ColourAttachmentWrite); // Only write color
 
     render_pass = std::make_unique<RenderPass>(device, swap_chain.image_format, std::vector { dependancy });
 }
@@ -31,11 +31,21 @@ void TriangleRenderPass::prepare_framebuffers() {
     }
 }
 
-void TriangleRenderPass::prepare_pipeline() {
+void TriangleRenderPass::prepare_pipeline(CommandPool &setup_command_pool, Queue &transfer_queue) {
     Shader vertex_shader(device, "Vertices_vert.spv");
     Shader fragment_shader(device, "Vertices_frag.spv");
 
-    buffer = std::make_unique<Buffer>(device, vertices);
+    size_t data_size = sizeof(vertices[0]) * vertices.size();
+    auto staging_buffer = Buffer::create_buffer(device, vertices, BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
+    buffer = Buffer::create_empty_buffer(device, data_size, BufferUsage::TransferDestination | BufferUsage::Vertex, MemoryProperties::DeviceLocal);
+    CommandBuffer command_buffer(device, setup_command_pool);
+
+    command_buffer.start_recording(true);
+    command_buffer.cmd_copy_buffer(*staging_buffer, *buffer, data_size);
+    command_buffer.stop_recording();
+
+    transfer_queue.submit(command_buffer);
+    transfer_queue.wait_idle();
 
     std::vector<AttributeEntry> attribute_entries;
     attribute_entries.push_back({ VK_FORMAT_R32G32_SFLOAT , 2 * sizeof(float) });

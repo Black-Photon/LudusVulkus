@@ -5,6 +5,7 @@
 
 #include "Logger.h"
 #include "SwapChainDetails.h"
+#include "Helper.h"
 
 std::vector<PhysicalDevice> PhysicalDevice::get_device_list(Instance& instance, Surface& surface, std::set<std::string> required_extensions) {
 	uint32_t device_count = 0;
@@ -64,10 +65,17 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice device, Surface &surface) : devi
 		queue_families.push_back(QueueFamily(vk_queue_family, index++, *this, surface));
 		QueueFamily& queue_family = queue_families.back();
 
+		// TODO Don't just use first queue family that support each capability
 		if (queue_family.supports_graphics && !selected_family.contains(GRAPHICS)) selected_family.insert(std::pair(GRAPHICS, queue_family));
 		if (queue_family.supports_compute && !selected_family.contains(COMPUTE)) selected_family.insert(std::pair(COMPUTE, queue_family));
 		if (queue_family.supports_transfer && !selected_family.contains(TRANSFER)) selected_family.insert(std::pair(TRANSFER, queue_family));
 		if (queue_family.supports_present && !selected_family.contains(PRESENT)) selected_family.insert(std::pair(PRESENT, queue_family));
+
+		Logger::log("Found queue family:", Logger::VERBOSE);
+		Logger::log("\t - Graphics: " + bool_str(selected_family.contains(GRAPHICS)), Logger::VERBOSE);
+		Logger::log("\t - Compute:  " + bool_str(selected_family.contains(COMPUTE)), Logger::VERBOSE);
+		Logger::log("\t - Transfer: " + bool_str(selected_family.contains(TRANSFER)), Logger::VERBOSE);
+		Logger::log("\t - Present:  " + bool_str(selected_family.contains(PRESENT)), Logger::VERBOSE);
 	}
 }
 

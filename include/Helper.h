@@ -8,6 +8,4 @@
 
 std::vector<char> read_file(const std::string& filename);
 
-VkPipelineStageFlags get_pipeline_stage_flags(PipelineStage pipeline_stage);
-
-VkAccessFlagBits get_pipeline_access_flags(PipelineAccess pipeline_access);
+std::string bool_str(bool b);

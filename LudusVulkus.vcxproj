@@ -206,6 +206,7 @@
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Vulkan\Memory\Buffer.cpp" />
     <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Vulkan\Command\CommandBuffer.cpp" />

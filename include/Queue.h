@@ -21,8 +21,10 @@ public:
 	Queue(QueueFamily& queue_family);
 
 	void setup_queue(Device &device);
-	void submit(CommandBuffer &command_buffer, std::vector<std::pair<Semaphore *, PipelineStage>> &wait_semaphores, std::vector<Semaphore *> &signal_semaphores, std::optional<Fence *> fence = VK_NULL_HANDLE);
+	void submit(CommandBuffer& command_buffer);
+	void submit(CommandBuffer &command_buffer, std::vector<std::pair<Semaphore *, VkPipelineStageFlags>> &wait_semaphores, std::vector<Semaphore *> &signal_semaphores, std::optional<Fence *> fence = std::nullopt);
 	void present(SwapChain& swap_chain, uint32_t index, std::vector<Semaphore *>& wait_semaphores);
+	void wait_idle();
 
 	VkQueue& get();
 

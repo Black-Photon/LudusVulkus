@@ -18,7 +18,7 @@ public:
 
 	VkCommandBuffer get();
 
-	void start_recording();
+	void start_recording(bool one_time = false);
 	void cmd_begin_render_pass(RenderPass& render_pass, Framebuffer &framebuffer);
 	void cmd_bind_pipeline(Pipeline &pipeline);
 	void cmd_bind_vertex_buffer(Buffer &buffer);
@@ -28,6 +28,7 @@ public:
 	void cmd_set_scissor(VkRect2D scissor);
 	void cmd_draw(size_t indices);
 	void cmd_end_render_pass();
+	void cmd_copy_buffer(Buffer& src_buffer, Buffer& dest_buffer, size_t data_size);
 	void stop_recording();
 
 	void reset();

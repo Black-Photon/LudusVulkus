@@ -20,13 +20,19 @@ VkQueue& Queue::get() {
 	return queue.value();
 }
 
-void Queue::submit(CommandBuffer &command_buffer, std::vector<std::pair<Semaphore *, PipelineStage>> &wait_semaphores, std::vector<Semaphore *> &signal_semaphores, std::optional<Fence *> fence) {
+void Queue::submit(CommandBuffer& command_buffer) {
+	std::vector<std::pair<Semaphore*, VkPipelineStageFlags>> wait_semaphores;
+	std::vector<Semaphore*> signal_semaphores;
+	submit(command_buffer, wait_semaphores, signal_semaphores);
+}
+
+void Queue::submit(CommandBuffer &command_buffer, std::vector<std::pair<Semaphore *, VkPipelineStageFlags>> &wait_semaphores, std::vector<Semaphore *> &signal_semaphores, std::optional<Fence *> fence) {
 	assert_setup();
 	std::vector<VkSemaphore> vk_wait_semaphores;
 	std::vector<VkPipelineStageFlags> vk_pipeline_stages;
 	for (auto& pair : wait_semaphores) {
 		vk_wait_semaphores.push_back(pair.first->get());
-		vk_pipeline_stages.push_back(get_pipeline_stage_flags(pair.second));
+		vk_pipeline_stages.push_back(pair.second);
 	}
 
 	std::vector<VkSemaphore> vk_signal_semaphores;
@@ -86,6 +92,11 @@ void Queue::present(SwapChain& swap_chain, uint32_t index, std::vector<Semaphore
 		throw std::runtime_error("Failed to present image");
 	}
 
+}
+
+void Queue::wait_idle() {
+	assert_setup();
+	vkQueueWaitIdle(queue.value());
 }
 
 void Queue::assert_setup() {

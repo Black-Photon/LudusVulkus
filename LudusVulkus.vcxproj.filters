@@ -242,6 +242,9 @@
     <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vulkan\Memory\Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\glsl\Triangle.frag">

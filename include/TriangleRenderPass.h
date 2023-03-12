@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "SwapChain.h"
 #include "CommandBuffer.h"
+#include "Queue.h"
 
 struct Vertex {
 	glm::vec2 pos;
@@ -19,7 +20,7 @@ public:
 	TriangleRenderPass(Device& device, SwapChain &swap_chain, std::vector<SubpassDependency> dependancies = {});
 	void update_swapchain(SwapChain& swap_chain);
 	void prepare_framebuffers();
-	void prepare_pipeline();
+	void prepare_pipeline(CommandPool& setup_command_pool, Queue& transfer_queue);
 	void record_commands(CommandBuffer &command_buffer, uint32_t current_framebuffer);
 
 private:

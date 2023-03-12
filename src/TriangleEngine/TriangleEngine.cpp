@@ -14,9 +14,11 @@ TriangleEngine::~TriangleEngine() {
 void TriangleEngine::prepare() {
 	Application::prepare();
 
+	Queue& transfer_queue = *device->queues.at(TRANSFER);
+
 	render_pass = std::make_unique<TriangleRenderPass>(*device, *swap_chain);
 	render_pass->prepare_framebuffers();
-	render_pass->prepare_pipeline();
+	render_pass->prepare_pipeline(*command_pool, transfer_queue);
 
 	for (uint32_t i = 0; i < FRAMES_IN_FLIGHT; i++) {
 		frames[i] = std::make_unique<Frame>(
@@ -42,8 +44,8 @@ void TriangleEngine::update() {
 
 	frame.image_in_flight->reset();
 
-	auto wait_semaphores = std::vector<std::pair<Semaphore*, PipelineStage>>();
-	wait_semaphores.push_back(std::pair(frame.image_available.get(), ColourAttachmentOutput));
+	auto wait_semaphores = std::vector<std::pair<Semaphore*, VkPipelineStageFlags>>();
+	wait_semaphores.push_back(std::pair(frame.image_available.get(), PipelineStage::ColourAttachmentOutput));
 
 	auto signal_semaphores = std::vector<Semaphore*>();
 	signal_semaphores.push_back(frame.render_finished.get());
