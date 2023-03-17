@@ -63,6 +63,11 @@ void CommandBuffer::cmd_bind_vertex_buffer(Buffer &buffer) {
     vkCmdBindVertexBuffers(command_buffer, 0, 1, &buffer.get(), offsets);
 }
 
+void CommandBuffer::cmd_bind_index_buffer(Buffer& buffer, VkIndexType index_type) {
+    VkDeviceSize offsets[] = { 0 };
+    vkCmdBindIndexBuffer(command_buffer, buffer.get(), 0, index_type);
+}
+
 /**
  * Creates a default viewport that covers the whole framebuffer
  */
@@ -99,6 +104,10 @@ void CommandBuffer::cmd_set_scissor(VkRect2D scissor) {
 
 void CommandBuffer::cmd_draw(size_t indices) {
     vkCmdDraw(command_buffer, static_cast<uint32_t>(indices), 1, 0, 0);
+}
+
+void CommandBuffer::cmd_draw_indexed(size_t indices) {
+    vkCmdDrawIndexed(command_buffer, static_cast<uint32_t>(indices), 1, 0, 0, 0);
 }
 
 void CommandBuffer::cmd_end_render_pass() {

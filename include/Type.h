@@ -62,3 +62,8 @@ namespace MemoryProperties {
     constexpr VkMemoryPropertyFlags HostCached = VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
     constexpr VkMemoryPropertyFlags LazilyAllocated = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
 }
+
+namespace IndexType {
+    constexpr VkIndexType UInt16 = VK_INDEX_TYPE_UINT16;
+    constexpr VkIndexType UInt32 = VK_INDEX_TYPE_UINT32;
+}

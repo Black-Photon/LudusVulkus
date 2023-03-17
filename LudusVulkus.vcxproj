@@ -167,6 +167,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\GeometryRenderPass.h" />
     <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\AttributeDescriptor.h" />
     <ClInclude Include="include\Application.h" />
@@ -204,8 +205,10 @@
     <ClInclude Include="include\ValidationLayers.h" />
     <ClInclude Include="include\VulkanEXT.h" />
     <ClInclude Include="include\Window.h" />
+    <ClInclude Include="include\Vulkus3D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Vulkus3D\GeometryRenderPass.cpp" />
     <ClCompile Include="src\Vulkan\Memory\Buffer.cpp" />
     <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -236,6 +239,7 @@
     <ClCompile Include="src\Vulkan\Meta\ValidationLayers.cpp" />
     <ClCompile Include="src\Vulkan\Meta\VulkanEXT.cpp" />
     <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Vulkus3D\Vulkus3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\CompileShader.bat" />
