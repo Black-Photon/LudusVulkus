@@ -32,8 +32,8 @@ void TriangleRenderPass::prepare_framebuffers() {
 }
 
 void TriangleRenderPass::prepare_pipeline(CommandPool &setup_command_pool, Queue &transfer_queue) {
-    Shader vertex_shader(device, "Vertices_vert.spv");
-    Shader fragment_shader(device, "Vertices_frag.spv");
+    Shader vertex_shader(device, "Triangle_vert.spv");
+    Shader fragment_shader(device, "Triangle_frag.spv");
 
     size_t data_size = sizeof(vertices[0]) * vertices.size();
     auto staging_buffer = Buffer::create_buffer(device, vertices, BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);

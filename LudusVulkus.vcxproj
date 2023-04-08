@@ -78,9 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,11 +138,22 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>python3 .\scripts\CompileShader.py</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreBuildEvent>
-      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+      <Message>
+      </Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>python3 .\scripts\CompileShader.py</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>assets/shaders/spir-v/*.spv;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -160,11 +175,22 @@
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>python3 .\scripts\CompileShader.py</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreBuildEvent>
-      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+      <Message>
+      </Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>python3 .\scripts\CompileShader.py</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Compiling shaders from GLSL to SPIR-V</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>assets/shaders/spir-v/*.spv;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DescriptorPool.h" />
