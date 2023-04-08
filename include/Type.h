@@ -67,3 +67,21 @@ namespace IndexType {
     constexpr VkIndexType UInt16 = VK_INDEX_TYPE_UINT16;
     constexpr VkIndexType UInt32 = VK_INDEX_TYPE_UINT32;
 }
+
+namespace ShaderStage {
+    constexpr VkShaderStageFlags Vertex = VK_SHADER_STAGE_VERTEX_BIT;
+    constexpr VkShaderStageFlags TessellationControl = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+    constexpr VkShaderStageFlags TessellationEvaluation = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+    constexpr VkShaderStageFlags Geometry = VK_SHADER_STAGE_GEOMETRY_BIT;
+    constexpr VkShaderStageFlags Fragment = VK_SHADER_STAGE_FRAGMENT_BIT;
+    constexpr VkShaderStageFlags Compute = VK_SHADER_STAGE_COMPUTE_BIT;
+    constexpr VkShaderStageFlags AllGraphics = VK_SHADER_STAGE_ALL_GRAPHICS;
+    constexpr VkShaderStageFlags All = VK_SHADER_STAGE_ALL;
+}
+
+typedef uint32_t LocalMemoryAllocation;
+
+namespace LocalMemory {
+    constexpr LocalMemoryAllocation Dynamic = 0;    // Memory is mapped when being set and will be unmapped immediately after transferring data
+    constexpr LocalMemoryAllocation Persistent = 1; // Memory is mapped when the buffer is first created and unmapped when the buffer is destroyed
+}

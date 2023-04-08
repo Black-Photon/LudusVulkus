@@ -167,6 +167,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DescriptorPool.h" />
     <ClInclude Include="include\GeometryRenderPass.h" />
     <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\AttributeDescriptor.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="include\Vulkus3D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Vulkan\Pipeline\DescriptorPool.cpp" />
     <ClCompile Include="src\Vulkus3D\GeometryRenderPass.cpp" />
     <ClCompile Include="src\Vulkan\Memory\Buffer.cpp" />
     <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp" />

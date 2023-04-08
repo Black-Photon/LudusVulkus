@@ -17,9 +17,11 @@ public:
 
 	VkPipeline get();
 	VkPipelineLayout get_layout();
+	VkDescriptorSetLayout get_descriptor_set_layout();
 
 	void create(Shader& vertex_shader, Shader& fragment_shader, RenderPass& render_pass);
 	void set_attribute_descriptor(AttributeDescriptor attribute_descriptor);
+	void add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages);
 
 private:
 	Device &device;
@@ -27,8 +29,10 @@ private:
 	bool setup = false;
 	VkPipelineLayout pipeline_layout;
 	VkPipeline pipeline;
+	std::optional<VkDescriptorSetLayout> descriptor_set_layout;
 
 	std::optional<AttributeDescriptor> attribute_descriptor;
+	std::vector<VkDescriptorSetLayoutBinding> descriptor_set_bindings;
 
 	VkPipelineShaderStageCreateInfo create_shader_stage(Shader& shader, ShaderType type);
 	VkPipelineDynamicStateCreateInfo create_dynamic_state(DynamicState& dynamic_state);
@@ -39,5 +43,6 @@ private:
 	VkPipelineMultisampleStateCreateInfo create_multisample_state();
 	VkPipelineColorBlendAttachmentState create_color_blend_attachment_state();
 	VkPipelineColorBlendStateCreateInfo create_color_blend_state(std::vector<VkPipelineColorBlendAttachmentState>& blend_attachment_infos);
+	void create_descriptor_set_layout();
 };
 

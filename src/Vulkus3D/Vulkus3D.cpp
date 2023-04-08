@@ -19,6 +19,7 @@ void Vulkus3D::prepare() {
 	render_pass = std::make_unique<GeometryRenderPass>(*device, *swap_chain);
 	render_pass->prepare_framebuffers();
 	render_pass->prepare_pipeline(*command_pool, transfer_queue);
+	render_pass->prepare_descriptor_sets(FRAMES_IN_FLIGHT);
 
 	for (uint32_t i = 0; i < FRAMES_IN_FLIGHT; i++) {
 		frames[i] = std::make_unique<Frame>(
@@ -44,6 +45,8 @@ void Vulkus3D::update() {
 
 	frame.image_in_flight->reset();
 
+	render_pass->update_descriptor_sets(swap_chain->get_extent().width, swap_chain->get_extent().height, current_frame);
+
 	auto wait_semaphores = std::vector<std::pair<Semaphore*, VkPipelineStageFlags>>();
 	wait_semaphores.push_back(std::pair(frame.image_available.get(), PipelineStage::ColourAttachmentOutput));
 
@@ -52,7 +55,7 @@ void Vulkus3D::update() {
 
 	command_buffer.reset();
 	command_buffer.start_recording();
-	render_pass->record_commands(command_buffer, image_index);
+	render_pass->record_commands(command_buffer, image_index, current_frame);
 	command_buffer.stop_recording();
 
 	graphics_queue.submit(command_buffer, wait_semaphores, signal_semaphores, frame.image_in_flight.get());

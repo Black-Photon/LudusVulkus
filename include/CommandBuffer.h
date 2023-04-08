@@ -7,6 +7,7 @@
 #include "Framebuffer.h"
 #include "Pipeline.h"
 #include "Buffer.h"
+#include "DescriptorPool.h"
 
 class CommandPool;
 
@@ -23,6 +24,7 @@ public:
 	void cmd_bind_pipeline(Pipeline &pipeline);
 	void cmd_bind_vertex_buffer(Buffer &buffer);
 	void cmd_bind_index_buffer(Buffer& buffer, VkIndexType index_type);
+	void cmd_bind_descriptor_set(DescriptorPool& descriptor_pool, Pipeline& pipeline, uint32_t descriptor_index);
 	void cmd_set_viewport();
 	void cmd_set_viewport(VkViewport viewport);
 	void cmd_set_scissor();

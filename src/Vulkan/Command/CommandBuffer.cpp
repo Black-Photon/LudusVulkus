@@ -68,6 +68,11 @@ void CommandBuffer::cmd_bind_index_buffer(Buffer& buffer, VkIndexType index_type
     vkCmdBindIndexBuffer(command_buffer, buffer.get(), 0, index_type);
 }
 
+void CommandBuffer::cmd_bind_descriptor_set(DescriptorPool& descriptor_pool, Pipeline &pipeline, uint32_t descriptor_index) {
+    VkDescriptorSet descriptor_set = descriptor_pool.get_descriptor_set(descriptor_index);
+    vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_layout(), 0, 1, &descriptor_set, 0, nullptr);
+}
+
 /**
  * Creates a default viewport that covers the whole framebuffer
  */

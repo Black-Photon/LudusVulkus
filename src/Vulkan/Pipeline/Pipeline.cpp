@@ -12,6 +12,7 @@ Pipeline::~Pipeline() {
 	Logger::log("Freeing Pipeline", Logger::VERBOSE);
 	vkDestroyPipelineLayout(device.get(), pipeline_layout, nullptr);
 	vkDestroyPipeline(device.get(), pipeline, nullptr);
+	if (descriptor_set_layout.has_value()) vkDestroyDescriptorSetLayout(device.get(), descriptor_set_layout.value(), nullptr);
 }
 
 void Pipeline::create(Shader& vertex_shader, Shader& fragment_shader, RenderPass &render_pass) {
@@ -34,10 +35,17 @@ void Pipeline::create(Shader& vertex_shader, Shader& fragment_shader, RenderPass
 
 	VkPipelineColorBlendStateCreateInfo color_blend_info = create_color_blend_state(color_blend_attachment_infos);
 
+	create_descriptor_set_layout();
+
 	VkPipelineLayoutCreateInfo pipeline_layout_info{};
 	pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipeline_layout_info.setLayoutCount = 0;
-	pipeline_layout_info.pSetLayouts = nullptr;
+	if (descriptor_set_layout.has_value()) {
+		pipeline_layout_info.setLayoutCount = 1;
+		pipeline_layout_info.pSetLayouts = &descriptor_set_layout.value();
+	} else {
+		pipeline_layout_info.setLayoutCount = 0;
+		pipeline_layout_info.pSetLayouts = nullptr;
+	}
 	pipeline_layout_info.pushConstantRangeCount = 0;
 	pipeline_layout_info.pPushConstantRanges = nullptr;
 
@@ -74,6 +82,17 @@ void Pipeline::set_attribute_descriptor(AttributeDescriptor attribute_descriptor
 	this->attribute_descriptor = attribute_descriptor;
 }
 
+void Pipeline::add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages) {
+	VkDescriptorSetLayoutBinding descriptor_set_binding{};
+	descriptor_set_binding.binding = binding;
+	descriptor_set_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptor_set_binding.descriptorCount = 1;
+	descriptor_set_binding.stageFlags = shader_stages;
+	descriptor_set_binding.pImmutableSamplers = nullptr;
+
+	descriptor_set_bindings.push_back(descriptor_set_binding);
+}
+
 VkPipeline Pipeline::get() {
 	if (!setup) {
 		throw std::runtime_error("Pipeline has not been setup with create()");
@@ -86,6 +105,16 @@ VkPipelineLayout Pipeline::get_layout() {
 		throw std::runtime_error("Pipeline has not been setup with create()");
 	}
 	return pipeline_layout;
+}
+
+VkDescriptorSetLayout Pipeline::get_descriptor_set_layout() {
+	if (!setup) {
+		throw std::runtime_error("Pipeline has not been setup with create()");
+	}
+	if (!descriptor_set_layout.has_value()) {
+		throw std::runtime_error("This pipeline doesn't have any descriptor set bindings");
+	}
+	return descriptor_set_layout.value();
 }
 
 VkPipelineShaderStageCreateInfo Pipeline::create_shader_stage(Shader& shader, ShaderType type) {
@@ -206,4 +235,20 @@ VkPipelineColorBlendStateCreateInfo Pipeline::create_color_blend_state(std::vect
 	color_blend_info.blendConstants[2] = 0.0f;
 	color_blend_info.blendConstants[3] = 0.0f;
 	return color_blend_info;
+}
+
+void Pipeline::create_descriptor_set_layout() {
+	if (descriptor_set_bindings.size() == 0) return;
+
+	VkDescriptorSetLayoutCreateInfo descriptor_set_layout_info{};
+	descriptor_set_layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	descriptor_set_layout_info.bindingCount = descriptor_set_bindings.size();
+	descriptor_set_layout_info.pBindings = descriptor_set_bindings.data();
+
+	VkDescriptorSetLayout descriptor_set_layout;
+	if (vkCreateDescriptorSetLayout(device.get(), &descriptor_set_layout_info, nullptr, &descriptor_set_layout) != VK_SUCCESS) {
+		throw std::runtime_error("Unable to create descriptor set layout");
+	}
+
+	this->descriptor_set_layout = descriptor_set_layout;
 }
