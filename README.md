@@ -9,9 +9,13 @@ The Triangle Engine is up and running! Build it yourself now to get the true tri
 
 ## Building
 Right now the recommended way of building is through Visual Studio. You'll need to install and add these to your Additional Library Directories:
- - VulkanSDK (tested with 1.3.236.0)
+ - VulkanSDK (tested with 1.3.243.0)
  - GLFW (tested with 3.3.8)
+ - GLM (Tested with 0.9.9.8)
  
 You'll also need these as Additional Library Dependancies:
  - `vulkan-1.lib`
  - `glfw3.lib`
+
+And you'll need to add the include directories for each of the above libraries.
+You'll also need Python to run the shader compilation script, and to update the script with your Vulkan SDK path
