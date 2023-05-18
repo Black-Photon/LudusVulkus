@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <map>
+#include <ranges>
 
 #include "Logger.h"
 #include "SwapChainDetails.h"
@@ -27,7 +28,7 @@ std::vector<PhysicalDevice> PhysicalDevice::get_device_list(Instance& instance, 
 	Logger::log("Starting device registration (priority TOP->BOTTOM)", Logger::INFO);
 
 	std::vector<PhysicalDevice> devices;
-	for (const auto& device : device_options) {
+	for (const auto& device : std::ranges::views::reverse(device_options)) {
 		if (device.first > 0) {
 			devices.push_back(device.second);
 
@@ -40,6 +41,7 @@ std::vector<PhysicalDevice> PhysicalDevice::get_device_list(Instance& instance, 
 			Logger::log("\t - Compute:  " + has_support(COMPUTE), Logger::VERBOSE);
 			Logger::log("\t - Transfer: " + has_support(TRANSFER), Logger::VERBOSE);
 			Logger::log("\t - Present:  " + has_support(PRESENT), Logger::VERBOSE);
+			Logger::log("\tSuitability is " + std::to_string(device.first), Logger::VERBOSE);
 		}
 	}
 
@@ -59,6 +61,8 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice device, Surface &surface) : devi
 
 	std::vector<VkQueueFamilyProperties> vk_queue_families(queue_family_count);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, vk_queue_families.data());
+
+	Logger::log("Enumerating queue families for device " + std::string(device_properties.deviceName), Logger::VERBOSE);
 
 	uint32_t index = 0;
 	for (auto &vk_queue_family : vk_queue_families) {

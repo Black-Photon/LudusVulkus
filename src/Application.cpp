@@ -40,5 +40,6 @@ void Application::recreate_swapchain() {
 
     device->wait_idle();
 
+    swap_chain.reset();
     swap_chain = std::make_unique<SwapChain>(*device, *window, *surface, settings);
 }

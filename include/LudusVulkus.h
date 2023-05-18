@@ -44,13 +44,6 @@ public:
         App app(instance, device, window, surface, settings);
 
         glfwSetWindowUserPointer(window.get(), reinterpret_cast<void*>(&app));
-        auto on_set_framebuffer_size = [](GLFWwindow* window, int width, int height) -> void {
-            auto app = reinterpret_cast<App*>(glfwGetWindowUserPointer(window));
-            Logger::log("Recreating swap chain", Logger::VERBOSE);
-            app->recreate_swapchain();
-        };
-
-        glfwSetFramebufferSizeCallback(window.get(), on_set_framebuffer_size);
 
         app.prepare();
 
