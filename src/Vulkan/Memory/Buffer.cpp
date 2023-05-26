@@ -44,7 +44,7 @@ Buffer::~Buffer() {
 	vkFreeMemory(device.get(), device_memory, nullptr);
 }
 
-VkBuffer& Buffer::get() {
+const VkBuffer& Buffer::get() const {
 	return buffer;
 }
 

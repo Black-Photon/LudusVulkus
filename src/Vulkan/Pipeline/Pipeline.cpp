@@ -82,10 +82,10 @@ void Pipeline::set_attribute_descriptor(AttributeDescriptor attribute_descriptor
 	this->attribute_descriptor = attribute_descriptor;
 }
 
-void Pipeline::add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages) {
+void Pipeline::add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages, VkDescriptorType descriptor_type) {
 	VkDescriptorSetLayoutBinding descriptor_set_binding{};
 	descriptor_set_binding.binding = binding;
-	descriptor_set_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptor_set_binding.descriptorType = descriptor_type;
 	descriptor_set_binding.descriptorCount = 1;
 	descriptor_set_binding.stageFlags = shader_stages;
 	descriptor_set_binding.pImmutableSamplers = nullptr;

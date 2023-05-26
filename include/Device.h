@@ -23,7 +23,7 @@ public:
 	Device(const Device&) = delete;
 	~Device();
 
-	VkDevice& get();
+	VkDevice get() const;
 
 	void wait_idle();
 

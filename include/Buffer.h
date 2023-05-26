@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stb_image.h>
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <memory>
@@ -7,6 +8,8 @@
 #include "Device.h"
 #include "Type.h"
 #include "Logger.h"
+
+using namespace std::literals::string_view_literals;
 
 class Buffer {
 public:
@@ -29,9 +32,29 @@ public:
 		return std::unique_ptr<Buffer>(buffer);
 	}
 
+	static std::tuple<std::unique_ptr<Buffer>, uint32_t, uint32_t> create_buffer_from_image(Device& device, const std::string &image_path, VkBufferUsageFlags buffer_usage, VkMemoryPropertyFlags memory_properties, LocalMemoryAllocation local_memory_allocation = LocalMemory::Dynamic) {
+		if ((memory_properties & MemoryProperties::HostVisible) == 0) {
+			throw std::runtime_error("Can't set memory as the host doesn't have visibility - use MemoryProperties::HostVisible or create_empty_buffer");
+		}
+
+		int tex_width, tex_height, tex_channels;
+		stbi_uc* image_data = stbi_load(image_path.c_str(), &tex_width, &tex_height, &tex_channels, STBI_rgb_alpha);
+		VkDeviceSize image_size = tex_width * tex_height * 4;
+
+		if (!image_data) {
+			throw std::runtime_error("Failed to load texture from " + image_path);
+		}
+		
+		Buffer* buffer = new Buffer(device, image_size, buffer_usage, memory_properties, local_memory_allocation);
+		buffer->fill_buffer(static_cast<const void*>(image_data), image_size);
+		stbi_image_free(image_data);
+
+		return std::make_tuple(std::unique_ptr<Buffer>(buffer), tex_width, tex_height);
+	}
+
 	~Buffer();
 
-	VkBuffer& get();
+	const VkBuffer& get() const;
 
 	void fill_buffer(const void* data, VkDeviceSize data_size, uint32_t offset = 0);
 

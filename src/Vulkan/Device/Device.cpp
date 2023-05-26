@@ -41,6 +41,7 @@ Device::Device(const PhysicalDevice &physical_device,
 	create_info.queueCreateInfoCount = static_cast<uint32_t>(created_queue_info.size());
 	create_info.pQueueCreateInfos = created_queue_info.data();
 
+	// TODO enabling all features may be expensive
 	create_info.pEnabledFeatures = &physical_device.device_features;
 	create_info.enabledExtensionCount = static_cast<uint32_t>(c_extensions.size());
 	create_info.ppEnabledExtensionNames = c_extensions.data();
@@ -72,7 +73,7 @@ Device::~Device() {
 	vkDestroyDevice(device, nullptr);
 }
 
-VkDevice& Device::get() {
+VkDevice Device::get() const {
 	return device;
 }
 

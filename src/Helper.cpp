@@ -26,3 +26,14 @@ std::vector<char> read_file(const std::string& filename) {
 std::string bool_str(bool b) {
     return b ? "true" : "false";
 }
+
+VkDescriptorType get_access_type(VkDescriptorType descriptor_type) {
+    switch (descriptor_type) {
+    case DescriptorType::Sampler:
+        return DescriptorType::UniformBuffer;
+    case DescriptorType::CombinedImageSampler:
+        return DescriptorType::CombinedImageSampler;
+    default:
+        throw std::runtime_error("Unknown descriptor type with index " + std::to_string(descriptor_type));
+    }
+}

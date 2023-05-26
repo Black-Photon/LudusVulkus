@@ -109,14 +109,14 @@ SwapChain::SwapChain(Device &device, Window& window, Surface& surface, Settings&
         throw std::runtime_error("Unable to create swapchain");
     }
 
+    std::vector<VkImage> vk_images;
     vkGetSwapchainImagesKHR(device.get(), swap_chain, &image_count, nullptr);
-    images.resize(image_count);
-    vkGetSwapchainImagesKHR(device.get(), swap_chain, &image_count, images.data());
+    vk_images.resize(image_count);
+    vkGetSwapchainImagesKHR(device.get(), swap_chain, &image_count, vk_images.data());
 
-    for (auto &image : images) {
-        Logger::log("Adding Image View");
-        auto image_view = std::make_unique<ImageView>(device, image, image_format);
-        image_views.push_back(std::move(image_view));
+    for (auto vk_image : vk_images) {
+        Image *image = new Image(device, vk_image, image_format);
+        images.push_back(image);
     }
 }
 

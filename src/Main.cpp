@@ -1,3 +1,8 @@
+// C++ source file, must be included in .cpp
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#undef STB_IMAGE_IMPLEMENTATION
+
 #include <vulkan/vulkan.h>
 
 #include <iostream>

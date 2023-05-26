@@ -21,11 +21,11 @@ void TriangleRenderPass::update_swapchain(SwapChain& swap_chain) {
 
 void TriangleRenderPass::prepare_framebuffers() {
     framebuffers = std::vector<std::unique_ptr<Framebuffer>>();
-    if (swap_chain->image_views.size() == 0) {
+    if (swap_chain->images.size() == 0) {
         throw std::runtime_error("Render pass has no targets!");
     }
-    for (auto& image_view : swap_chain->image_views) {
-        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, *image_view, *swap_chain);
+    for (auto& image : swap_chain->images) {
+        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, image, *swap_chain);
         Logger::log("Adding framebuffer", Logger::VERBOSE);
         framebuffers.push_back(std::move(framebuffer));
     }

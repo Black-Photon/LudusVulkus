@@ -85,3 +85,20 @@ namespace LocalMemory {
     constexpr LocalMemoryAllocation Dynamic = 0;    // Memory is mapped when being set and will be unmapped immediately after transferring data
     constexpr LocalMemoryAllocation Persistent = 1; // Memory is mapped when the buffer is first created and unmapped when the buffer is destroyed
 }
+
+namespace DescriptorType {
+    constexpr VkDescriptorType Sampler = VK_DESCRIPTOR_TYPE_SAMPLER;
+    constexpr VkDescriptorType CombinedImageSampler = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    constexpr VkDescriptorType SampledImage = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+    constexpr VkDescriptorType StorageImage = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+    constexpr VkDescriptorType UniformTexel = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+    constexpr VkDescriptorType StorageTexel = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+    constexpr VkDescriptorType UniformBuffer = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    constexpr VkDescriptorType StorageBuffer = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    constexpr VkDescriptorType UniformBufferDynamic = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    constexpr VkDescriptorType StorageBufferDynamic = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+    constexpr VkDescriptorType InputAttachment = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+    constexpr VkDescriptorType InlineUniformBlock = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK;
+    constexpr VkDescriptorType AccelerationStructureKHR = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
+    constexpr VkDescriptorType AccelerationStructureNV = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV;
+}

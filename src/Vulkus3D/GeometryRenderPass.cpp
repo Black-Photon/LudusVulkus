@@ -1,6 +1,8 @@
 #include "GeometryRenderPass.h"
 
 #include "Logger.h"
+#include "Image.h"
+#include "Helper.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -9,7 +11,7 @@
 #include <chrono>
 
 GeometryRenderPass::GeometryRenderPass(Device& device, SwapChain& swap_chain, std::vector<SubpassDependency> dependancies) :
-    device(device), swap_chain(&swap_chain)
+    device(device), swap_chain(&swap_chain), sampler(device)
 {
     SubpassDependency dependancy;
     dependancy.set_src_subpass(VK_SUBPASS_EXTERNAL);
@@ -19,6 +21,7 @@ GeometryRenderPass::GeometryRenderPass(Device& device, SwapChain& swap_chain, st
     dependancy.add_dest_access(PipelineAccess::ColourAttachmentWrite); // Only write color
 
     render_pass = std::make_unique<RenderPass>(device, swap_chain.image_format, std::vector{ dependancy });
+    pipeline = std::make_unique<Pipeline>(device);
 }
 
 void GeometryRenderPass::update_swapchain(SwapChain& swap_chain) {
@@ -27,20 +30,17 @@ void GeometryRenderPass::update_swapchain(SwapChain& swap_chain) {
 
 void GeometryRenderPass::prepare_framebuffers() {
     framebuffers = std::vector<std::unique_ptr<Framebuffer>>();
-    if (swap_chain->image_views.size() == 0) {
+    if (swap_chain->images.size() == 0) {
         throw std::runtime_error("Render pass has no targets!");
     }
-    for (auto& image_view : swap_chain->image_views) {
-        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, *image_view, *swap_chain);
+    for (auto& image : swap_chain->images) {
+        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, image, *swap_chain);
         Logger::log("Adding framebuffer", Logger::VERBOSE);
         framebuffers.push_back(std::move(framebuffer));
     }
 }
 
-void GeometryRenderPass::prepare_pipeline(CommandPool& setup_command_pool, Queue& transfer_queue) {
-    Shader vertex_shader(device, "Vertices_vert.spv");
-    Shader fragment_shader(device, "Vertices_frag.spv");
-
+void GeometryRenderPass::create_buffers(CommandPool& setup_command_pool, Queue& transfer_queue) {
     VkDeviceSize vertex_data_size = sizeof(vertices[0]) * vertices.size();
     auto vertex_staging_buffer = Buffer::create_buffer(device, vertices, BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
     vertex_buffer = Buffer::create_empty_buffer(device, vertex_data_size, BufferUsage::TransferDestination | BufferUsage::Vertex, MemoryProperties::DeviceLocal);
@@ -65,14 +65,25 @@ void GeometryRenderPass::prepare_pipeline(CommandPool& setup_command_pool, Queue
     transfer_queue.submit(command_buffer);
     transfer_queue.wait_idle();
 
-    std::vector<AttributeEntry> attribute_entries;
-    attribute_entries.push_back({ VK_FORMAT_R32G32_SFLOAT , 2 * sizeof(float) });
-    attribute_entries.push_back({ VK_FORMAT_R32G32B32_SFLOAT , 3 * sizeof(float) });
-    AttributeDescriptor attribute_descriptor(attribute_entries);
+    VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
+    auto [texture_buffer, width, height] = Buffer::create_buffer_from_image(device, "assets/textures/texture.jpg", BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
+    image = std::make_unique<Image>(device, format, width, height);
 
-    pipeline = std::make_unique<Pipeline>(device);
-    pipeline->set_attribute_descriptor(attribute_descriptor);
-    pipeline->add_descriptor_set_binding(0, ShaderStage::Vertex);
+    command_buffer.reset();
+    command_buffer.start_recording(true);
+    command_buffer.cmd_image_pipeline_barrier(*image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    command_buffer.cmd_copy_buffer_to_image(*texture_buffer, *image, width, height);
+    command_buffer.cmd_image_pipeline_barrier(*image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    command_buffer.stop_recording();
+
+    transfer_queue.submit(command_buffer);
+    transfer_queue.wait_idle();
+}
+
+void GeometryRenderPass::prepare_pipeline() {
+    Shader vertex_shader(device, "Vertices_vert.spv");
+    Shader fragment_shader(device, "Vertices_frag.spv");
+
     pipeline->create(vertex_shader, fragment_shader, *render_pass);
 }
 
@@ -88,15 +99,40 @@ void GeometryRenderPass::record_commands(CommandBuffer& command_buffer, uint32_t
     command_buffer.cmd_end_render_pass();
 }
 
-void GeometryRenderPass::prepare_descriptor_sets(uint32_t num_descriptor_sets) {
+void GeometryRenderPass::setup_descriptor_sets(uint32_t num_descriptor_sets) {
+    descriptor_sets.emplace_back(ShaderStage::Vertex, DescriptorType::Sampler, sizeof(Transformations));
+    descriptor_sets.emplace_back(ShaderStage::Fragment, DescriptorType::CombinedImageSampler, 0);
+
+    std::vector<AttributeEntry> attribute_entries;
+    attribute_entries.emplace_back(VK_FORMAT_R32G32_SFLOAT, 2 * sizeof(float));
+    attribute_entries.emplace_back(VK_FORMAT_R32G32B32_SFLOAT, 3 * sizeof(float));
+    attribute_entries.emplace_back(VK_FORMAT_R32G32_SFLOAT, 2 * sizeof(float));
+    AttributeDescriptor attribute_descriptor(attribute_entries);
+
+    pipeline->set_attribute_descriptor(attribute_descriptor);
+    for (uint32_t i = 0; i < descriptor_sets.size(); i++) {
+        DescriptorSetInfo descriptor_set = descriptor_sets[i];
+        pipeline->add_descriptor_set_binding(i, descriptor_set.shader_stage, get_access_type(descriptor_set.descriptor_type));
+    }
+
     for (size_t i = 0; i < num_descriptor_sets; i++) {
         VkDeviceSize buffer_size = sizeof(Transformations);
         descriptor_set_buffers.push_back(Buffer::create_empty_buffer(device, buffer_size, BufferUsage::Uniform, MemoryProperties::HostVisible | MemoryProperties::HostCoherent, LocalMemory::Persistent));
     }
+}
 
-    descriptor_pool = std::make_unique<DescriptorPool>(device, num_descriptor_sets);
+void GeometryRenderPass::prepare_descriptor_sets(uint32_t num_descriptor_sets) {
+    if (image == nullptr) {
+        throw std::runtime_error("Image hasn't been setup yet");
+    }
+
+    std::vector<DescriptorPool::DescriptorAccess> descriptor_accesses{};
+    descriptor_accesses.push_back(&descriptor_set_buffers);
+    descriptor_accesses.push_back(DescriptorPool::ImageSampler(image->get_view(), sampler.get()));
+
+    descriptor_pool = std::make_unique<DescriptorPool>(device, descriptor_sets, num_descriptor_sets);
     descriptor_pool->allocate_descriptor_set(pipeline->get_descriptor_set_layout());
-    descriptor_pool->update_descriptor_sets(descriptor_set_buffers, sizeof(Transformations));
+    descriptor_pool->update_descriptor_sets(descriptor_accesses);
 }
 
 void GeometryRenderPass::update_descriptor_sets(uint32_t screen_width, uint32_t screen_height, uint32_t buffer_index) {
@@ -120,5 +156,5 @@ void GeometryRenderPass::update_descriptor_sets(uint32_t screen_width, uint32_t 
     transformations.projection = glm::perspective(fov, screen_width / (float) screen_height, 0.1f, 10.0f);
     transformations.projection[1][1] *= -1; // Y-coordinate is inverted compared to OpenGL
 
-    descriptor_set_buffers.at(buffer_index)->fill_buffer(&transformations, sizeof(Transformations));
+    descriptor_set_buffers.at(buffer_index).fill_buffer(&transformations, sizeof(Transformations));
 }

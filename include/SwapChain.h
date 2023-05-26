@@ -1,10 +1,11 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "SwapChainDetails.h"
 #include "Device.h"
-#include "ImageView.h"
+#include "Image.h"
 #include "Semaphore.h"
 #include "Fence.h"
 
@@ -34,8 +35,7 @@ public:
 
 	bool out_of_date = false;
 	VkFormat image_format;
-	std::vector<VkImage> images;
-	std::vector<std::unique_ptr<ImageView>> image_views;
+	boost::ptr_vector<Image> images;
 
 private:
 	Device &device;

@@ -8,6 +8,8 @@
 #include "Pipeline.h"
 #include "Buffer.h"
 #include "DescriptorPool.h"
+#include "Image.h"
+#include "Type.h"
 
 class CommandPool;
 
@@ -33,6 +35,8 @@ public:
 	void cmd_draw_indexed(size_t indices);
 	void cmd_end_render_pass();
 	void cmd_copy_buffer(Buffer& src_buffer, Buffer& dest_buffer, size_t data_size);
+	void cmd_image_pipeline_barrier(const Image& image, VkFormat format, VkImageLayout old_layout, VkImageLayout new_layout);
+	void cmd_copy_buffer_to_image(const Buffer& buffer, const Image& image, uint32_t width, uint32_t height);
 	void stop_recording();
 
 	void reset();

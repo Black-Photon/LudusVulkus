@@ -21,7 +21,7 @@ public:
 
 	void create(Shader& vertex_shader, Shader& fragment_shader, RenderPass& render_pass);
 	void set_attribute_descriptor(AttributeDescriptor attribute_descriptor);
-	void add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages);
+	void add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages, VkDescriptorType descriptor_type);
 
 private:
 	Device &device;

@@ -2,10 +2,10 @@
 
 #include "Logger.h"
 
-Framebuffer::Framebuffer(Device &device, RenderPass &render_pass, ImageView &image_view, SwapChain &swap_chain) :
+Framebuffer::Framebuffer(Device &device, RenderPass &render_pass, Image &image, SwapChain &swap_chain) :
 	device(device), extent(swap_chain.get_extent())
 {
-    VkImageView vk_image_view = image_view.get();
+    VkImageView vk_image_view = image.get_view();
 
     VkFramebufferCreateInfo framebuffer_info{};
     framebuffer_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;

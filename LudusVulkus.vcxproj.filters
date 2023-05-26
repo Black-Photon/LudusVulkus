@@ -102,9 +102,6 @@
     <ClInclude Include="include\SwapChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ImageView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -160,6 +157,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\DescriptorPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DescriptorSetInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -218,9 +224,6 @@
     <ClCompile Include="src\Vulkan\Pipeline\Pipeline.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vulkan\Presentation\ImageView.cpp">
-      <Filter>Source Files\Vulkan\Presentation</Filter>
-    </ClCompile>
     <ClCompile Include="src\Vulkan\Pipeline\Shader.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
@@ -261,6 +264,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Pipeline\DescriptorPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vulkan\Memory\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vulkan\Memory\Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,3 +9,5 @@
 std::vector<char> read_file(const std::string& filename);
 
 std::string bool_str(bool b);
+
+VkDescriptorType get_access_type(VkDescriptorType descriptor_type);
