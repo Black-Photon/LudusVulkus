@@ -4,9 +4,9 @@ An experimental Vulkan game engine developed to give me more experience in Vulka
 ## Current Progress
 I've been following the tutorial [here](https://vulkan-tutorial.com) to build up the initial engine. There are two scenes so far:
 
-The Vulkan3D scene is coming along well, now featuring support for image samplers! Sample shown below ([image from here](https://pixabay.com/en/statue-sculpture-fig-historically-1275469/)):
+The Vulkan3D scene is coming along well, now featuring support for depth buffers! Sample shown below ([image from here](https://pixabay.com/en/statue-sculpture-fig-historically-1275469/)):
 <p align="center">
-  <img src="https://github.com/Black-Photon/LudusVulkus/assets/28807595/5747baa6-55b3-42f7-ac55-8ac9c6490117" />
+  <img src="https://github.com/Black-Photon/LudusVulkus/assets/28807595/01cc1326-5570-481c-8d2e-56de24e41607" />
 </p>
 
 A triangle engine is also included as a seperate scene - build it yourself now to get the true triangular experience! Sample screenshot of the experience shown below:
@@ -15,8 +15,9 @@ A triangle engine is also included as a seperate scene - build it yourself now t
 </p>
 
 ## Building
-Right now the recommended way of building is through Visual Studio. You'll need to install and add these to your Additional Include Directories:
- - VulkanSDK (tested with 1.3.243.0)
+Right now the recommended way of building is through Visual Studio. The solution files are included so it should run out the box.
+To setup manually, you'll need to install and add these to your Additional Include Directories:
+ - VulkanSDK (tested with 1.3.261.1)
  - GLFW (tested with 3.3.8)
  - GLM (tested with 0.9.9.8)
  - STB (stb_image.h) (tested with 2.28)
