@@ -24,6 +24,7 @@ public:
 	VkPhysicalDevice get() const;
 	VkPhysicalDeviceMemoryProperties get_memory_properties() const;
 	uint32_t find_memory_type(uint32_t type_mask, VkMemoryPropertyFlags properties) const;
+	VkFormat first_supported_format(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		
 	std::vector<QueueFamily> queue_families;
 	std::map<QueueType, QueueFamily> selected_family;

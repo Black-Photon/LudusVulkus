@@ -4,6 +4,7 @@
 
 #include "CommandPool.h"
 #include "Logger.h"
+#include "Helper.h"
 
 CommandBuffer::CommandBuffer(Device &device, CommandPool &command_pool) :
     device(device), command_pool(command_pool)
@@ -39,16 +40,24 @@ void CommandBuffer::start_recording(bool one_time) {
     }
 }
 
-void CommandBuffer::cmd_begin_render_pass(RenderPass &render_pass, Framebuffer &framebuffer) {
+void CommandBuffer::cmd_begin_render_pass(RenderPass &render_pass, Framebuffer &framebuffer, AttachmentDescriptions &attachment_descriptions) {
     VkRenderPassBeginInfo render_pass_begin_info{};
     render_pass_begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     render_pass_begin_info.renderPass = render_pass.get();
     render_pass_begin_info.framebuffer = framebuffer.get();
     render_pass_begin_info.renderArea.offset = { 0, 0 };
     render_pass_begin_info.renderArea.extent = framebuffer.extent;
-    VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-    render_pass_begin_info.clearValueCount = 1;
-    render_pass_begin_info.pClearValues = &clearColor;
+    std::vector<VkClearValue> clearColors{};
+    for (auto& attachment_description : attachment_descriptions.attachment_descriptions) {
+        VkFormat format = attachment_description.format;
+        if (has_depth(format) || has_stencil(format)) {
+            clearColors.push_back({ 1.0f, 0 });
+        } else {
+            clearColors.push_back({ { {0.0f, 0.0f, 0.0f, 1.0f} } });
+        }
+    }
+    render_pass_begin_info.clearValueCount = clearColors.size();
+    render_pass_begin_info.pClearValues = clearColors.data();
     vkCmdBeginRenderPass(command_buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
     this->framebuffer.emplace(&framebuffer);
@@ -138,7 +147,6 @@ void CommandBuffer::cmd_image_pipeline_barrier(const Image &image, VkFormat form
     barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.image = image.get();
-    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     barrier.subresourceRange.baseMipLevel = 0;
     barrier.subresourceRange.levelCount = 1;
     barrier.subresourceRange.baseArrayLayer = 0;
@@ -146,12 +154,30 @@ void CommandBuffer::cmd_image_pipeline_barrier(const Image &image, VkFormat form
     barrier.srcAccessMask = 0; // TODO
     barrier.dstAccessMask = 0; // TODO
 
+    if (new_layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+        if (has_stencil(format)) {
+            barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+        }
+    }
+    else {
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    }
+
     if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
         barrier.srcAccessMask = 0;
         barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
         source_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
         destination_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    }
+    else if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED && new_layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+        barrier.srcAccessMask = 0;
+        barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+        source_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+        destination_stage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     }
     else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;

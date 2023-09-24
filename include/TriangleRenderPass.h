@@ -37,5 +37,6 @@ private:
 	std::vector<std::unique_ptr<Framebuffer>> framebuffers;
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<Buffer> buffer;
+	AttachmentDescriptions attachment_descriptions{};
 };
 

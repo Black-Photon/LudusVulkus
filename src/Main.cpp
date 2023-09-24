@@ -20,7 +20,7 @@ int main() {
     glfwInit();
 
     try {
-        LudusVulkus<Vulkus3D> ludus_vulkus;
+        LudusVulkus<TriangleEngine> ludus_vulkus;
         ludus_vulkus.run();
     } catch (const std::exception& e) {
         Logger::log(e.what(), Logger::FATAL);

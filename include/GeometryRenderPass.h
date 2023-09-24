@@ -15,7 +15,7 @@
 class GeometryRenderPass {
 public:
 	struct Vertex {
-		glm::vec2 pos;
+		glm::vec3 pos;
 		glm::vec3 color;
 		glm::vec2 tex_coord;
 	};
@@ -38,16 +38,22 @@ private:
 	} transformations;
 
 	const std::vector<Vertex> vertices = {
-		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
+		{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+		{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+		{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+		{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+		{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+		{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+		{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+		{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 	};
 
 	const std::vector<uint16_t> indices = {
+		4, 5, 6, 6, 7, 4,
 		0, 1, 2, 2, 3, 0
 	};
-
+	
 	Device& device;
 	Sampler sampler;
 	std::unique_ptr<RenderPass> render_pass;
@@ -60,6 +66,8 @@ private:
 	std::unique_ptr<DescriptorPool> descriptor_pool;
 	boost::ptr_vector<Buffer> descriptor_set_buffers{};
 	std::unique_ptr<Image> image;
+	std::unique_ptr<Image> depth_image;
 	std::vector<DescriptorSetInfo> descriptor_sets;
+	AttachmentDescriptions attachment_descriptions{};
 };
 

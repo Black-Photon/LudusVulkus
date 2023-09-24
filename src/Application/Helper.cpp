@@ -37,3 +37,25 @@ VkDescriptorType get_access_type(VkDescriptorType descriptor_type) {
         throw std::runtime_error("Unknown descriptor type with index " + std::to_string(descriptor_type));
     }
 }
+
+VkFormat get_supported_depth_format(PhysicalDevice device) {
+    return device.first_supported_format(
+        depth_formats,
+        VK_IMAGE_TILING_OPTIMAL,
+        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+    );
+}
+
+bool has_depth(VkFormat format) {
+    for (VkFormat depth_format : depth_formats) {
+        if (format == depth_format) return true;
+    }
+    return false;
+}
+
+bool has_stencil(VkFormat format) {
+    for (VkFormat stencil_format : stencil_formats) {
+        if (format == stencil_format) return true;
+    }
+    return false;
+}

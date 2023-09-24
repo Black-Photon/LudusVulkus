@@ -12,7 +12,10 @@ TriangleRenderPass::TriangleRenderPass(Device& device, SwapChain& swap_chain, st
     dependancy.add_dest_stage(PipelineStage::ColourAttachmentOutput); // will we write the current subpass
     dependancy.add_dest_access(PipelineAccess::ColourAttachmentWrite); // Only write color
 
-    render_pass = std::make_unique<RenderPass>(device, swap_chain.image_format, std::vector { dependancy });
+    attachment_descriptions = {};
+    attachment_descriptions.add_attachment(swap_chain.image_format);
+
+    render_pass = std::make_unique<RenderPass>(device, attachment_descriptions, std::vector { dependancy });
 }
 
 void TriangleRenderPass::update_swapchain(SwapChain& swap_chain) {
@@ -25,7 +28,9 @@ void TriangleRenderPass::prepare_framebuffers() {
         throw std::runtime_error("Render pass has no targets!");
     }
     for (auto& image : swap_chain->images) {
-        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, image, *swap_chain);
+        std::vector<Image*> attachments{};
+        attachments.push_back(&image);
+        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, attachments, *swap_chain);
         Logger::log("Adding framebuffer", Logger::VERBOSE);
         framebuffers.push_back(std::move(framebuffer));
     }
@@ -58,7 +63,7 @@ void TriangleRenderPass::prepare_pipeline(CommandPool &setup_command_pool, Queue
 }
 
 void TriangleRenderPass::record_commands(CommandBuffer& command_buffer, uint32_t current_framebuffer) {
-    command_buffer.cmd_begin_render_pass(*render_pass, *framebuffers.at(current_framebuffer));
+    command_buffer.cmd_begin_render_pass(*render_pass, *framebuffers.at(current_framebuffer), attachment_descriptions);
     command_buffer.cmd_bind_pipeline(*pipeline);
     command_buffer.cmd_bind_vertex_buffer(*buffer);
     command_buffer.cmd_set_scissor();

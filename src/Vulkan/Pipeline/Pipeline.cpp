@@ -28,6 +28,7 @@ void Pipeline::create(Shader& vertex_shader, Shader& fragment_shader, RenderPass
 	VkPipelineViewportStateCreateInfo viewport_info = create_viewport_state(dynamic_state);
 	VkPipelineRasterizationStateCreateInfo rasterization_info = create_rasterization_state();
 	VkPipelineMultisampleStateCreateInfo multisample_info = create_multisample_state();
+	VkPipelineDepthStencilStateCreateInfo depth_stencil_info = create_depth_stencil_state();
 
 	VkPipelineColorBlendAttachmentState color_blend_attachement_info = create_color_blend_attachment_state();
 	std::vector<VkPipelineColorBlendAttachmentState> color_blend_attachment_infos;
@@ -235,6 +236,17 @@ VkPipelineColorBlendStateCreateInfo Pipeline::create_color_blend_state(std::vect
 	color_blend_info.blendConstants[2] = 0.0f;
 	color_blend_info.blendConstants[3] = 0.0f;
 	return color_blend_info;
+}
+
+VkPipelineDepthStencilStateCreateInfo Pipeline::create_depth_stencil_state() {
+	VkPipelineDepthStencilStateCreateInfo depth_stencil_info{};
+	depth_stencil_info.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	depth_stencil_info.depthTestEnable = VK_TRUE;
+	depth_stencil_info.depthWriteEnable = VK_TRUE;
+	depth_stencil_info.depthCompareOp = VK_COMPARE_OP_LESS;
+	depth_stencil_info.depthBoundsTestEnable = VK_FALSE;
+	depth_stencil_info.stencilTestEnable = VK_FALSE;
+	return depth_stencil_info;
 }
 
 void Pipeline::create_descriptor_set_layout() {

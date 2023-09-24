@@ -22,7 +22,7 @@ public:
 	VkCommandBuffer get();
 
 	void start_recording(bool one_time = false);
-	void cmd_begin_render_pass(RenderPass& render_pass, Framebuffer &framebuffer);
+	void cmd_begin_render_pass(RenderPass& render_pass, Framebuffer &framebuffer, AttachmentDescriptions& attachment_descriptions);
 	void cmd_bind_pipeline(Pipeline &pipeline);
 	void cmd_bind_vertex_buffer(Buffer &buffer);
 	void cmd_bind_index_buffer(Buffer& buffer, VkIndexType index_type);

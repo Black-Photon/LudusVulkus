@@ -1,10 +1,12 @@
 #include "Image.h"
 
-Image::Image(const Device& device, VkImage vk_image, const VkFormat format) : device(device), image(vk_image), manage_image_memory(false) {
-	create_image_view(format);
+#include "Logger.h"
+
+Image::Image(const Device& device, VkImage vk_image, const VkFormat format, ImageType image_type) : device(device), image(vk_image), manage_image_memory(false) {
+	create_image_view(format, image_type);
 }
 
-Image::Image(const Device &device, const VkFormat format, uint32_t width, uint32_t height) : device(device), manage_image_memory(true) {
+Image::Image(const Device &device, const VkFormat format, uint32_t width, uint32_t height, ImageType image_type) : device(device), manage_image_memory(true) {
 	VkImageCreateInfo image_info {};
 	image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	image_info.imageType = VK_IMAGE_TYPE_2D;
@@ -16,7 +18,15 @@ Image::Image(const Device &device, const VkFormat format, uint32_t width, uint32
 	image_info.format = format;
 	image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
 	image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	image_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	if (image_type == ImageType::COLOUR) {
+		image_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	}
+	else if (image_type == ImageType::DEPTH) {
+		image_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	}
+	else {
+		throw std::runtime_error("Unhandled image type");
+	}
 	image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	image_info.samples = VK_SAMPLE_COUNT_1_BIT;
 	image_info.flags = 0; // Optional
@@ -39,7 +49,7 @@ Image::Image(const Device &device, const VkFormat format, uint32_t width, uint32
 
 	vkBindImageMemory(device.get(), image, memory, 0);
 
-	create_image_view(format);
+	create_image_view(format, image_type);
 }
 
 Image::~Image() {
@@ -59,7 +69,7 @@ const VkImageView Image::get_view() const {
 	return image_view;
 }
 
-void Image::create_image_view(const VkFormat format) {
+void Image::create_image_view(const VkFormat format, ImageType image_type) {
 	VkImageViewCreateInfo create_info{};
 	create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	create_info.image = image;
@@ -69,7 +79,15 @@ void Image::create_image_view(const VkFormat format) {
 	create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 	create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 	create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-	create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	if (image_type == ImageType::COLOUR) {
+		create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	else if (image_type == ImageType::DEPTH) {
+		create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+	}
+	else {
+		throw std::runtime_error("Unhandled image type");
+	}
 	create_info.subresourceRange.baseMipLevel = 0;
 	create_info.subresourceRange.levelCount = 1;
 	create_info.subresourceRange.baseArrayLayer = 0;

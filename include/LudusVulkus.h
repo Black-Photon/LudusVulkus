@@ -144,6 +144,7 @@ private:
     std::set<std::string> select_validation_layers() {
         std::set<std::string> layers = std::set<std::string>();
         layers.insert("VK_LAYER_KHRONOS_validation");
+        layers.insert("VK_LAYER_LUNARG_api_dump");
         return layers;
     }
 };

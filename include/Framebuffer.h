@@ -7,7 +7,7 @@
 
 class Framebuffer {
 public:
-	Framebuffer(Device &device, RenderPass& render_pass, Image& image, SwapChain& swap_chain);
+	Framebuffer(Device &device, RenderPass& render_pass, std::vector<Image*> attachments, SwapChain& swap_chain);
 	~Framebuffer();
 
 	VkFramebuffer get();

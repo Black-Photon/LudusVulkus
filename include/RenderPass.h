@@ -4,10 +4,11 @@
 
 #include "SwapChain.h"
 #include "SubpassDependency.h"
+#include "AttachmentDescriptions.h"
 
 class RenderPass {
 public:
-	RenderPass(Device &device, VkFormat& image_format, std::vector<SubpassDependency> dependencies = {});
+	RenderPass(Device &device, AttachmentDescriptions attachment_descriptions, std::vector<SubpassDependency> dependencies = {});
 	~RenderPass();
 
 	VkRenderPass get();

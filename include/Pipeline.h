@@ -43,6 +43,7 @@ private:
 	VkPipelineMultisampleStateCreateInfo create_multisample_state();
 	VkPipelineColorBlendAttachmentState create_color_blend_attachment_state();
 	VkPipelineColorBlendStateCreateInfo create_color_blend_state(std::vector<VkPipelineColorBlendAttachmentState>& blend_attachment_infos);
+	VkPipelineDepthStencilStateCreateInfo create_depth_stencil_state();
 	void create_descriptor_set_layout();
 };
 

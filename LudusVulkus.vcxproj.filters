@@ -168,6 +168,9 @@
     <ClInclude Include="include\DescriptorSetInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AttachmentDescriptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -176,13 +179,13 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp">
+    <ClCompile Include="src\Application\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Instance.cpp">
       <Filter>Source Files\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="src\Helper.cpp">
+    <ClCompile Include="src\Application\Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Device\Device.cpp">
@@ -245,10 +248,10 @@
     <ClCompile Include="src\Vulkan\Synchronisation\SubpassDependency.cpp">
       <Filter>Source Files\Vulkan\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="src\TriangleEngine\TriangleEngine.cpp">
+    <ClCompile Include="src\Application\TriangleEngine\TriangleEngine.cpp">
       <Filter>Source Files\TriangleEngine</Filter>
     </ClCompile>
-    <ClCompile Include="src\TriangleEngine\TriangleRenderPass.cpp">
+    <ClCompile Include="src\Application\TriangleEngine\TriangleRenderPass.cpp">
       <Filter>Source Files\TriangleEngine</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Pipeline\AttributeDescriptor.cpp">
@@ -257,10 +260,10 @@
     <ClCompile Include="src\Vulkan\Memory\Buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vulkus3D\Vulkus3D.cpp">
+    <ClCompile Include="src\Application\Vulkus3D\Vulkus3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vulkus3D\GeometryRenderPass.cpp">
+    <ClCompile Include="src\Application\Vulkus3D\GeometryRenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Pipeline\DescriptorPool.cpp">
@@ -270,6 +273,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vulkan\Memory\Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vulkan\Pipeline\AttachmentDescriptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

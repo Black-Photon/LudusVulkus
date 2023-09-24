@@ -16,11 +16,15 @@ GeometryRenderPass::GeometryRenderPass(Device& device, SwapChain& swap_chain, st
     SubpassDependency dependancy;
     dependancy.set_src_subpass(VK_SUBPASS_EXTERNAL);
     dependancy.set_dest_subpass(0);
-    dependancy.add_src_stage(PipelineStage::ColourAttachmentOutput); // Only when previous has finished writing...
-    dependancy.add_dest_stage(PipelineStage::ColourAttachmentOutput); // will we write the current subpass
-    dependancy.add_dest_access(PipelineAccess::ColourAttachmentWrite); // Only write color
+    dependancy.add_src_stage(PipelineStage::ColourAttachmentOutput | PipelineStage::EarlyFragmentTest); // Only when previous has finished writing...
+    dependancy.add_dest_stage(PipelineStage::ColourAttachmentOutput | PipelineStage::EarlyFragmentTest); // will we write the current subpass
+    dependancy.add_dest_access(PipelineAccess::ColourAttachmentWrite | PipelineAccess::DepthStencilAttachmentWrite); // Write colour and depth
 
-    render_pass = std::make_unique<RenderPass>(device, swap_chain.image_format, std::vector{ dependancy });
+    attachment_descriptions = {};
+    attachment_descriptions.add_attachment(swap_chain.image_format);
+    attachment_descriptions.add_attachment(get_supported_depth_format(device.physical_device));
+
+    render_pass = std::make_unique<RenderPass>(device, attachment_descriptions, std::vector{ dependancy });
     pipeline = std::make_unique<Pipeline>(device);
 }
 
@@ -34,7 +38,10 @@ void GeometryRenderPass::prepare_framebuffers() {
         throw std::runtime_error("Render pass has no targets!");
     }
     for (auto& image : swap_chain->images) {
-        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, image, *swap_chain);
+        std::vector<Image *> attachments{};
+        attachments.push_back(&image);
+        attachments.push_back(depth_image.get());
+        auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, attachments, *swap_chain);
         Logger::log("Adding framebuffer", Logger::VERBOSE);
         framebuffers.push_back(std::move(framebuffer));
     }
@@ -44,36 +51,38 @@ void GeometryRenderPass::create_buffers(CommandPool& setup_command_pool, Queue& 
     VkDeviceSize vertex_data_size = sizeof(vertices[0]) * vertices.size();
     auto vertex_staging_buffer = Buffer::create_buffer(device, vertices, BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
     vertex_buffer = Buffer::create_empty_buffer(device, vertex_data_size, BufferUsage::TransferDestination | BufferUsage::Vertex, MemoryProperties::DeviceLocal);
-    CommandBuffer command_buffer(device, setup_command_pool);
-
-    command_buffer.start_recording(true);
-    command_buffer.cmd_copy_buffer(*vertex_staging_buffer, *vertex_buffer, vertex_data_size);
-    command_buffer.stop_recording();
-
-    transfer_queue.submit(command_buffer);
-    transfer_queue.wait_idle();
 
     VkDeviceSize index_data_size = sizeof(indices[0]) * indices.size();
     auto index_staging_buffer = Buffer::create_buffer(device, indices, BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
     index_buffer = Buffer::create_empty_buffer(device, index_data_size, BufferUsage::TransferDestination | BufferUsage::Index, MemoryProperties::DeviceLocal);
 
-    command_buffer.reset();
-    command_buffer.start_recording(true);
-    command_buffer.cmd_copy_buffer(*index_staging_buffer, *index_buffer, index_data_size);
-    command_buffer.stop_recording();
-
-    transfer_queue.submit(command_buffer);
-    transfer_queue.wait_idle();
-
     VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
     auto [texture_buffer, width, height] = Buffer::create_buffer_from_image(device, "assets/textures/texture.jpg", BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
+    Logger::log("Creating colour image");
     image = std::make_unique<Image>(device, format, width, height);
 
-    command_buffer.reset();
+    VkFormat depth_format = get_supported_depth_format(device.physical_device);
+    Logger::log("Creating depth image");
+    depth_image = std::make_unique<Image>(device, depth_format, swap_chain->get_extent().width, swap_chain->get_extent().height, ImageType::DEPTH);
+    Logger::log("Images created!");
+    
+    CommandBuffer command_buffer(device, setup_command_pool);
     command_buffer.start_recording(true);
+
+    // Copy vertex data
+    command_buffer.cmd_copy_buffer(*vertex_staging_buffer, *vertex_buffer, vertex_data_size);
+
+    // Copy index data
+    command_buffer.cmd_copy_buffer(*index_staging_buffer, *index_buffer, index_data_size);
+
+    // Transition image
     command_buffer.cmd_image_pipeline_barrier(*image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     command_buffer.cmd_copy_buffer_to_image(*texture_buffer, *image, width, height);
     command_buffer.cmd_image_pipeline_barrier(*image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+    // Transition depth
+    command_buffer.cmd_image_pipeline_barrier(*depth_image, depth_format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+
     command_buffer.stop_recording();
 
     transfer_queue.submit(command_buffer);
@@ -88,7 +97,7 @@ void GeometryRenderPass::prepare_pipeline() {
 }
 
 void GeometryRenderPass::record_commands(CommandBuffer& command_buffer, uint32_t current_framebuffer, uint32_t current_frame) {
-    command_buffer.cmd_begin_render_pass(*render_pass, *framebuffers.at(current_framebuffer));
+    command_buffer.cmd_begin_render_pass(*render_pass, *framebuffers.at(current_framebuffer), attachment_descriptions);
     command_buffer.cmd_bind_pipeline(*pipeline);
     command_buffer.cmd_bind_vertex_buffer(*vertex_buffer);
     command_buffer.cmd_bind_index_buffer(*index_buffer, IndexType::UInt16);
@@ -104,7 +113,7 @@ void GeometryRenderPass::setup_descriptor_sets(uint32_t num_descriptor_sets) {
     descriptor_sets.emplace_back(ShaderStage::Fragment, DescriptorType::CombinedImageSampler, 0);
 
     std::vector<AttributeEntry> attribute_entries;
-    attribute_entries.emplace_back(VK_FORMAT_R32G32_SFLOAT, 2 * sizeof(float));
+    attribute_entries.emplace_back(VK_FORMAT_R32G32B32_SFLOAT, 3 * sizeof(float));
     attribute_entries.emplace_back(VK_FORMAT_R32G32B32_SFLOAT, 3 * sizeof(float));
     attribute_entries.emplace_back(VK_FORMAT_R32G32_SFLOAT, 2 * sizeof(float));
     AttributeDescriptor attribute_descriptor(attribute_entries);

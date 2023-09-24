@@ -167,3 +167,18 @@ std::vector<VkExtensionProperties> PhysicalDevice::get_supported_extensions() {
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, available_extensions.data());
 	return available_extensions;
 }
+
+VkFormat PhysicalDevice::first_supported_format(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+	for (VkFormat format : candidates) {
+		VkFormatProperties props;
+		vkGetPhysicalDeviceFormatProperties(device, format, &props);
+
+		if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+			return format;
+		} else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+			return format;
+		}
+	}
+
+	throw std::runtime_error("None of the formats provided were supported");
+}

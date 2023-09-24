@@ -17,8 +17,8 @@ void Vulkus3D::prepare() {
 	Queue& transfer_queue = *device->queues.at(TRANSFER);
 
 	render_pass = std::make_unique<GeometryRenderPass>(*device, *swap_chain);
-	render_pass->prepare_framebuffers();
 	render_pass->create_buffers(*command_pool, transfer_queue);
+	render_pass->prepare_framebuffers();
 	render_pass->setup_descriptor_sets(FRAMES_IN_FLIGHT);
 	render_pass->prepare_pipeline();
 	render_pass->prepare_descriptor_sets(FRAMES_IN_FLIGHT);
