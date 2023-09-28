@@ -8,10 +8,8 @@ RenderPass::RenderPass(Device &device, AttachmentDescriptions attachment_descrip
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = attachment_descriptions.color_attachment_references.size();
     subpass.pColorAttachments = attachment_descriptions.color_attachment_references.data();
-    Logger::log("color_attachment_references: " + std::to_string(subpass.colorAttachmentCount));
     if (attachment_descriptions.depth_attachment_reference.has_value()) {
         subpass.pDepthStencilAttachment = &attachment_descriptions.depth_attachment_reference.value();
-        Logger::log("depth_attachment_reference: " + std::to_string(attachment_descriptions.depth_attachment_reference.has_value()));
     }
 
     std::vector<VkSubpassDependency> vk_dependencies;
@@ -23,7 +21,6 @@ RenderPass::RenderPass(Device &device, AttachmentDescriptions attachment_descrip
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_info.attachmentCount = attachment_descriptions.attachment_descriptions.size();
     render_pass_info.pAttachments = attachment_descriptions.attachment_descriptions.data();
-    Logger::log("attachment_descriptions: " + std::to_string(render_pass_info.attachmentCount));
     render_pass_info.subpassCount = 1;
     render_pass_info.pSubpasses = &subpass;
     render_pass_info.dependencyCount = vk_dependencies.size();

@@ -63,7 +63,7 @@ void Pipeline::create(Shader& vertex_shader, Shader& fragment_shader, RenderPass
 	pipeline_info.pViewportState = &viewport_info;
 	pipeline_info.pRasterizationState = &rasterization_info;
 	pipeline_info.pMultisampleState = &multisample_info;
-	pipeline_info.pDepthStencilState = nullptr;
+	pipeline_info.pDepthStencilState = this->depth_test ? &depth_stencil_info : nullptr;
 	pipeline_info.pColorBlendState = &color_blend_info;
 	pipeline_info.pDynamicState = &dynamic_state_info;
 	pipeline_info.layout = pipeline_layout;
@@ -263,4 +263,11 @@ void Pipeline::create_descriptor_set_layout() {
 	}
 
 	this->descriptor_set_layout = descriptor_set_layout;
+}
+
+void Pipeline::enable_depth_test() {
+	if (this->setup) {
+		throw std::runtime_error("Cannot enable depth test after setting up pipeline");
+	}
+	this->depth_test = true;
 }

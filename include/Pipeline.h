@@ -22,11 +22,13 @@ public:
 	void create(Shader& vertex_shader, Shader& fragment_shader, RenderPass& render_pass);
 	void set_attribute_descriptor(AttributeDescriptor attribute_descriptor);
 	void add_descriptor_set_binding(uint32_t binding, VkShaderStageFlags shader_stages, VkDescriptorType descriptor_type);
+	void enable_depth_test();
 
 private:
 	Device &device;
 
 	bool setup = false;
+	bool depth_test = false;
 	VkPipelineLayout pipeline_layout;
 	VkPipeline pipeline;
 	std::optional<VkDescriptorSetLayout> descriptor_set_layout;

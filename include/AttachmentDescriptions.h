@@ -10,6 +10,6 @@ public:
 	std::vector<VkAttachmentReference> color_attachment_references;
 	std::optional<VkAttachmentReference> depth_attachment_reference;
 
-	void add_attachment(VkFormat format);
+	void add_attachment(VkFormat format, bool store = true);
 };
 

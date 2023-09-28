@@ -22,10 +22,11 @@ GeometryRenderPass::GeometryRenderPass(Device& device, SwapChain& swap_chain, st
 
     attachment_descriptions = {};
     attachment_descriptions.add_attachment(swap_chain.image_format);
-    attachment_descriptions.add_attachment(get_supported_depth_format(device.physical_device));
+    attachment_descriptions.add_attachment(get_supported_depth_format(device.physical_device), false);
 
     render_pass = std::make_unique<RenderPass>(device, attachment_descriptions, std::vector{ dependancy });
     pipeline = std::make_unique<Pipeline>(device);
+    pipeline->enable_depth_test();
 }
 
 void GeometryRenderPass::update_swapchain(SwapChain& swap_chain) {
@@ -37,12 +38,13 @@ void GeometryRenderPass::prepare_framebuffers() {
     if (swap_chain->images.size() == 0) {
         throw std::runtime_error("Render pass has no targets!");
     }
+    VkFormat depth_format = get_supported_depth_format(device.physical_device);
+    depth_image = std::make_unique<Image>(device, depth_format, swap_chain->get_extent().width, swap_chain->get_extent().height, ImageType::DEPTH);
     for (auto& image : swap_chain->images) {
         std::vector<Image *> attachments{};
         attachments.push_back(&image);
         attachments.push_back(depth_image.get());
         auto framebuffer = std::make_unique<Framebuffer>(device, *render_pass, attachments, *swap_chain);
-        Logger::log("Adding framebuffer", Logger::VERBOSE);
         framebuffers.push_back(std::move(framebuffer));
     }
 }
@@ -58,13 +60,10 @@ void GeometryRenderPass::create_buffers(CommandPool& setup_command_pool, Queue& 
 
     VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
     auto [texture_buffer, width, height] = Buffer::create_buffer_from_image(device, "assets/textures/texture.jpg", BufferUsage::TransferSource, MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
-    Logger::log("Creating colour image");
     image = std::make_unique<Image>(device, format, width, height);
 
     VkFormat depth_format = get_supported_depth_format(device.physical_device);
-    Logger::log("Creating depth image");
     depth_image = std::make_unique<Image>(device, depth_format, swap_chain->get_extent().width, swap_chain->get_extent().height, ImageType::DEPTH);
-    Logger::log("Images created!");
     
     CommandBuffer command_buffer(device, setup_command_pool);
     command_buffer.start_recording(true);

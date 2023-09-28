@@ -59,8 +59,6 @@ void TriangleEngine::update() {
 
 	present_queue.present(*swap_chain, image_index, signal_semaphores);
 
-	while (true);
-
 	current_frame = (current_frame + 1) % FRAMES_IN_FLIGHT;
 }
 

@@ -4,14 +4,14 @@
 
 #include "Helper.h"
 
-void AttachmentDescriptions::add_attachment(VkFormat format) {
+void AttachmentDescriptions::add_attachment(VkFormat format, bool store) {
 	bool is_depth_stencil = has_depth(format) || has_stencil(format);
 
 	VkAttachmentDescription attachment_description{};
 	attachment_description.format = format;
 	attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
 	attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	attachment_description.storeOp = store ? VK_ATTACHMENT_STORE_OP_STORE : VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	attachment_description.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
